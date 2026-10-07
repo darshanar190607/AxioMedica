@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "RehabStep AI",
+    "slug": "rehabstep-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#8FAF8F"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.rehabstep.ai"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#8FAF8F",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.rehabstep.ai"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "backgroundColor": "#6B8F6B"
+    }
+  }
+}
