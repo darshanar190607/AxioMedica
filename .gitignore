@@ -1,41 +1,87 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+﻿# ═══════════════════════════════════════════════════════════════
+#  AxioMedica monorepo — .gitignore
+# ═══════════════════════════════════════════════════════════════
 
-# dependencies
+# ── Node / Expo (mobile/) ─────────────────────────────────────
 node_modules/
-
-# Expo
-.expo/
-dist/
-web-build/
+mobile/node_modules/
+mobile/.expo/
+mobile/android/
+mobile/ios/
+mobile/dist/
+mobile/web-build/
+mobile/.env
 expo-env.d.ts
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
 .metro-health-check*
 
-# debug
+# ── Python (backend/ & ml/) ───────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+backend/.venv/
+ml/.venv/
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+backend/.env
+ml/.env
+
+# ── ML artefacts — large binary files ─────────────────────────
+*.pt          # PyTorch model weights
+*.pth         # PyTorch checkpoint
+*.ckpt        # generic checkpoint
+*.tflite      # TensorFlow Lite
+*.task        # MediaPipe task bundles
+*.onnx        # ONNX models
+*.h5          # Keras / HDF5
+ml/models/*.pt
+ml/models/*.pth
+ml/models/*.tflite
+ml/models/*.task
+ml/models/*.onnx
+ml/.ipynb_checkpoints/
+ml/notebooks/.ipynb_checkpoints/
+
+# ── Data directories (never commit raw data) ──────────────────
+data/
+**/data/
+ml/data/
+backend/data/
+
+# ── Environment / secrets ────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ── Build output ─────────────────────────────────────────────
+dist/
+build/
+*.tsbuildinfo
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
+# ── Native mobile ────────────────────────────────────────────
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+*.orig.*
+
+# ── OS / editor ──────────────────────────────────────────────
 .DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-# generated native folders
-/ios
-/android
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo

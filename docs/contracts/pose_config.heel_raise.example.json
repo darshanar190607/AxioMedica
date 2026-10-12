@@ -1,0 +1,73 @@
+﻿{
+  "_comment": "Bilateral heel raise (calf raise). Camera placed to patient's side at ankle height.",
+  "camera_view":  "side_either",
+  "side_aware":   true,
+  "landmarks": {
+    "left_hip":         23,
+    "right_hip":        24,
+    "left_knee":        25,
+    "right_knee":       26,
+    "left_ankle":       27,
+    "right_ankle":      28,
+    "left_heel":        29,
+    "right_heel":       30,
+    "left_foot_index":  31,
+    "right_foot_index": 32
+  },
+  "metrics": [
+    {
+      "name":               "heel_height",
+      "type":               "vertical_delta",
+      "landmark":           "left_heel",
+      "reference_landmark": "left_ankle",
+      "_comment":           "Positive when heel rises above the ankle reference. side_aware swaps to right_ when injured_side=right."
+    },
+    {
+      "name":   "ankle_angle",
+      "type":   "angle",
+      "joints": ["left_knee","left_ankle","left_foot_index"],
+      "_comment": "Angle at the ankle joint. ~90 deg neutral, increases toward 140 deg at full plantarflexion."
+    },
+    {
+      "name":   "hip_vertical_delta",
+      "type":   "vertical_delta",
+      "landmark":           "left_hip",
+      "reference_landmark": "left_knee",
+      "_comment": "Used to detect hip_hike compensation — hip should not rise relative to knee during the raise."
+    }
+  ],
+  "phases": [
+    {
+      "name":      "down",
+      "condition": { "metric": "heel_height", "operator": "lte", "value": 0.02 },
+      "_comment":  "Heel flat on floor or minimally elevated."
+    },
+    {
+      "name":      "up",
+      "condition": { "metric": "heel_height", "operator": "gte", "value": 0.08 },
+      "_comment":  "Heel sufficiently raised — full plantarflexion target."
+    }
+  ],
+  "rep_cycle": ["down","up","down"],
+  "min_rep_duration_ms": 1500,
+  "form_rules": [
+    {
+      "id":    "too_fast",
+      "check": { "metric": "rep_duration_ms", "operator": "lt", "value": 1500 },
+      "cue":   "Slow down — aim for 2 seconds up, hold, then 2 seconds down."
+    },
+    {
+      "id":    "low_height",
+      "check": { "metric": "heel_height", "operator": "lt", "value": 0.06 },
+      "_comment": "Evaluated at peak (when phase == up). If peak heel_height never reaches 0.06, fire this.",
+      "cue":   "Rise higher onto the ball of your foot — push through the big toe."
+    },
+    {
+      "id":    "hip_hike",
+      "check": { "metric": "hip_vertical_delta", "operator": "gt", "value": 0.04 },
+      "_comment": "Hip rising more than 4% of screen height relative to knee = compensation.",
+      "cue":   "Keep your hips level — don't let one side hike up."
+    }
+  ],
+  "min_pose_confidence": 0.65
+}

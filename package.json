@@ -30,6 +30,8 @@
   },
   "private": true,
   "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "babel-preset-expo": "^57.0.12"
   }
 }

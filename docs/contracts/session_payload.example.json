@@ -1,0 +1,33 @@
+﻿{
+  "_comment": "Realistic heel-raise session. patient_id omitted (PII lives on backend).",
+  "client_uuid": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "started_at": "2026-10-07T17:30:00Z",
+  "ended_at":   "2026-10-07T17:43:20Z",
+  "pose_model_ver": "1.0.0",
+  "app_version":    "1.0.0",
+  "overall_score": 79.6,
+  "exercises": [
+    {
+      "exercise_id":    1,
+      "sets_done":      2,
+      "reps_done":      10,
+      "avg_form_score": 79.6,
+      "max_rom_deg":    44.2,
+      "avg_rom_deg":    38.5,
+      "pain_before":    3,
+      "pain_after":     2,
+      "reps": [
+        { "set_no": 1, "rep_no": 1, "duration_ms": 1280, "rom_deg": 32.1, "form_score": 61.0, "errors": ["too_fast","low_height"], "confidence": 0.91 },
+        { "set_no": 1, "rep_no": 2, "duration_ms": 2340, "rom_deg": 38.4, "form_score": 82.5, "errors": [],                         "confidence": 0.94 },
+        { "set_no": 1, "rep_no": 3, "duration_ms": 2580, "rom_deg": 41.0, "form_score": 86.0, "errors": [],                         "confidence": 0.95 },
+        { "set_no": 1, "rep_no": 4, "duration_ms": 2210, "rom_deg": 39.5, "form_score": 83.0, "errors": [],                         "confidence": 0.93 },
+        { "set_no": 1, "rep_no": 5, "duration_ms": 2490, "rom_deg": 44.2, "form_score": 88.5, "errors": [],                         "confidence": 0.95 },
+        { "set_no": 2, "rep_no": 1, "duration_ms": 2360, "rom_deg": 40.1, "form_score": 84.0, "errors": [],                         "confidence": 0.92 },
+        { "set_no": 2, "rep_no": 2, "duration_ms": 2100, "rom_deg": 37.8, "form_score": 79.0, "errors": ["hip_hike"],               "confidence": 0.90 },
+        { "set_no": 2, "rep_no": 3, "duration_ms": 2450, "rom_deg": 39.0, "form_score": 82.0, "errors": [],                         "confidence": 0.93 },
+        { "set_no": 2, "rep_no": 4, "duration_ms": 2280, "rom_deg": 36.5, "form_score": 77.5, "errors": ["low_height"],             "confidence": 0.91 },
+        { "set_no": 2, "rep_no": 5, "duration_ms": 2600, "rom_deg": 42.0, "form_score": 85.0, "errors": [],                         "confidence": 0.94 }
+      ]
+    }
+  ]
+}
