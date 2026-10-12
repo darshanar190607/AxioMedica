@@ -1,0 +1,64 @@
+﻿{
+  "_comment": "Seated ankle pump (dorsi/plantar flexion). Camera placed to patient's side at foot level.",
+  "camera_view":  "side_either",
+  "side_aware":   true,
+  "landmarks": {
+    "left_knee":        25,
+    "right_knee":       26,
+    "left_ankle":       27,
+    "right_ankle":      28,
+    "left_heel":        29,
+    "right_heel":       30,
+    "left_foot_index":  31,
+    "right_foot_index": 32
+  },
+  "metrics": [
+    {
+      "name":   "ankle_angle",
+      "type":   "angle",
+      "joints": ["left_knee","left_ankle","left_foot_index"],
+      "_comment": "Angle at the ankle. Neutral ~90 deg. Dorsiflexion (toes up) decreases angle. Plantarflexion (toes down) increases angle."
+    },
+    {
+      "name":   "ankle_angle_delta",
+      "type":   "vertical_delta",
+      "landmark":           "left_foot_index",
+      "reference_landmark": "left_ankle",
+      "_comment": "Tracks foot-index vertical movement relative to ankle — positive = toes rising (dorsiflexion)."
+    }
+  ],
+  "phases": [
+    {
+      "name":      "neutral",
+      "condition": { "metric": "ankle_angle", "operator": "between", "value": 82, "value_max": 98 },
+      "_comment":  "Foot roughly perpendicular to leg."
+    },
+    {
+      "name":      "dorsiflexed",
+      "condition": { "metric": "ankle_angle", "operator": "lte", "value": 78 },
+      "_comment":  "Toes pulled toward shin — dorsiflexion target."
+    },
+    {
+      "name":      "plantarflexed",
+      "condition": { "metric": "ankle_angle", "operator": "gte", "value": 108 },
+      "_comment":  "Toes pushed away from shin — plantarflexion target."
+    }
+  ],
+  "rep_cycle": ["neutral","dorsiflexed","neutral","plantarflexed","neutral"],
+  "_comment_rep_cycle": "One full pump = dorsiflexion + plantarflexion + return to neutral.",
+  "min_rep_duration_ms": 1200,
+  "form_rules": [
+    {
+      "id":    "too_fast",
+      "check": { "metric": "rep_duration_ms", "operator": "lt", "value": 1200 },
+      "cue":   "Slow it down — move through the full range steadily."
+    },
+    {
+      "id":    "low_confidence",
+      "check": { "metric": "rep_duration_ms", "operator": "gt", "value": 0 },
+      "_comment": "Sentinel: low_confidence is fired by the engine when frame confidence drops below min_pose_confidence, not by this rule. This entry documents the code is active for this exercise.",
+      "cue":   "Keep your leg in the camera frame for accurate tracking."
+    }
+  ],
+  "min_pose_confidence": 0.60
+}

@@ -1,0 +1,26 @@
+# Core FastAPI Framework & ASGI Server
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# Database & Async ORM
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# Settings & Validation
+pydantic[email]==2.10.1
+pydantic-settings==2.6.1
+
+# Security & Authentication
+python-jose[cryptography]==3.3.0
+argon2-cffi==23.1.0
+
+# Rate limiting (NOTE: swap to redis-backed in production)
+slowapi==0.1.9
+
+# Testing & Utilities
+httpx==0.28.0
+pytest==8.3.4
+pytest-asyncio==0.24.0
+aiosqlite==0.20.0
+

@@ -1,0 +1,59 @@
+# Docker Compose for AxioMedica Local Development
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: axiomedica_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-axiomedica_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-axiomedica_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - axiomedica_net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: axiomedica_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-axiomedica_db}
+      JWT_SECRET: ${JWT_SECRET:-insecure_dev_secret_key_change_in_production_12345678}
+      ACCESS_TTL_MIN: ${ACCESS_TTL_MIN:-60}
+      REFRESH_TTL_DAYS: ${REFRESH_TTL_DAYS:-30}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8081,http://localhost:19006,http://localhost:3000,http://127.0.0.1:8081}
+      ENVIRONMENT: development
+      LOG_LEVEL: DEBUG
+      DEBUG: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount code for hot reloading during development
+      - ./app:/app/app:ro
+      - ./alembic:/app/alembic:ro
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    networks:
+      - axiomedica_net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  axiomedica_net:
+    driver: bridge

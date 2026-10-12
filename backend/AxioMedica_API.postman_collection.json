@@ -1,0 +1,285 @@
+{
+  "info": {
+    "_postman_id": "a9182374-9f82-44f1-8cb4-30d8c11e3b52",
+    "name": "AxioMedica Tele-Rehab API",
+    "description": "Postman collection for manual verification of AxioMedica Auth, Patient Profiles, Exercises, Plans, Session Synchronization, and Progress Tracking.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "clinician_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "session_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "plan_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "client_uuid",
+      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth & Profiles",
+      "item": [
+        {
+          "name": "Login Demo Patient (Sarah Johnson)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set(\"access_token\", data.access_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sarah.johnson@email.com\",\n  \"password\": \"PatientPass123!\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Login Clinician (Dr. Michael Torres)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set(\"clinician_token\", data.access_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"dr.torres@axiomedica.io\",\n  \"password\": \"ClinicianPass123!\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Login Admin (System Administrator)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set(\"admin_token\", data.access_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@axiomedica.io\",\n  \"password\": \"AdminPass123!\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "List Patients (GET /clinician/patients)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{clinician_token}}"}],
+            "url": {"raw": "{{base_url}}/clinician/patients", "host": ["{{base_url}}"], "path": ["clinician", "patients"]}
+          }
+        },
+        {
+          "name": "Add / Onboard Patient (POST /clinician/patients)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{clinician_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new.patient@example.com\",\n  \"password\": \"PatientPass123!\",\n  \"full_name\": \"John Doe\",\n  \"phone\": \"+1 555-123-4567\",\n  \"injured_ankle\": \"Right\",\n  \"injury_type\": \"Grade 2 Inversion Sprain\",\n  \"total_weeks\": 6,\n  \"recovery_stage\": 1\n}"
+            },
+            "url": {"raw": "{{base_url}}/clinician/patients", "host": ["{{base_url}}"], "path": ["clinician", "patients"]}
+          }
+        },
+        {
+          "name": "Get Patient Profile (/patients/me)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/patients/me", "host": ["{{base_url}}"], "path": ["patients", "me"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Exercises & Plans",
+      "item": [
+        {
+          "name": "List Exercises (GET /exercises)",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/exercises", "host": ["{{base_url}}"], "path": ["exercises"]}
+          }
+        },
+        {
+          "name": "Get Exercise Detail (GET /exercises/:id)",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/exercises/1", "host": ["{{base_url}}"], "path": ["exercises", "1"]}
+          }
+        },
+        {
+          "name": "Get Active Plan (GET /plans/active)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/plans/active", "host": ["{{base_url}}"], "path": ["plans", "active"]}
+          }
+        },
+        {
+          "name": "Clinician Create Plan (POST /clinician/plans)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{clinician_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": \"<PATIENT_UUID>\",\n  \"title\": \"Custom Protocol\",\n  \"prescribed_frequency_per_week\": 5,\n  \"total_weeks\": 6,\n  \"recovery_stage\": 2,\n  \"exercises\": [\n    {\"exercise_id\": 1, \"sets\": 3, \"reps\": 10, \"frequency\": \"Twice a day\", \"duration\": \"5 min\", \"safe_range\": \"0° – 45°\", \"color\": \"#F5C842\", \"order_index\": 0}\n  ]\n}"
+            },
+            "url": {"raw": "{{base_url}}/clinician/plans", "host": ["{{base_url}}"], "path": ["clinician", "plans"]}
+          }
+        },
+        {
+          "name": "Clinician Approve Plan (PUT /clinician/plans/:id/approve)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{clinician_token}}"}],
+            "url": {"raw": "{{base_url}}/clinician/plans/{{plan_id}}/approve", "host": ["{{base_url}}"], "path": ["clinician", "plans", "{{plan_id}}", "approve"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Sessions & Sync",
+      "item": [
+        {
+          "name": "Sync Rehabilitation Session (POST /sessions/sync)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{access_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_uuid\": \"{{client_uuid}}\",\n  \"started_at\": \"2026-10-07T17:30:00Z\",\n  \"ended_at\": \"2026-10-07T17:43:20Z\",\n  \"pose_model_ver\": \"1.0.0\",\n  \"app_version\": \"1.0.0\",\n  \"overall_score\": 79.6,\n  \"exercises\": [\n    {\n      \"exercise_id\": 1,\n      \"sets_done\": 2,\n      \"reps_done\": 10,\n      \"avg_form_score\": 79.6,\n      \"max_rom_deg\": 44.2,\n      \"avg_rom_deg\": 38.5,\n      \"pain_before\": 3,\n      \"pain_after\": 2,\n      \"side\": \"right\",\n      \"reps\": [\n        { \"set_no\": 1, \"rep_no\": 1, \"duration_ms\": 1280, \"rom_deg\": 32.1, \"form_score\": 61.0, \"errors\": [\"too_fast\"], \"confidence\": 0.91 }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {"raw": "{{base_url}}/sessions/sync", "host": ["{{base_url}}"], "path": ["sessions", "sync"]}
+          }
+        },
+        {
+          "name": "List Sessions (GET /sessions)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/sessions?from=2026-10-01T00:00:00Z&to=2026-10-31T23:59:59Z", "host": ["{{base_url}}"], "path": ["sessions"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Progress & Pain Tracking",
+      "item": [
+        {
+          "name": "Recovery Progress Summary (GET /progress/summary)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/progress/summary", "host": ["{{base_url}}"], "path": ["progress", "summary"]}
+          }
+        },
+        {
+          "name": "Progress Metrics Time Series (GET /progress/metrics?metric=rom)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/progress/metrics?metric=rom&from=2026-10-01&to=2026-10-31", "host": ["{{base_url}}"], "path": ["progress", "metrics"]}
+          }
+        },
+        {
+          "name": "Record Pain Log (POST /pain-logs)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{access_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pain_level\": 3,\n  \"body_part\": \"left_ankle\",\n  \"notes\": \"Slight stiffness after morning routine\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/pain-logs", "host": ["{{base_url}}"], "path": ["pain-logs"]}
+          }
+        },
+        {
+          "name": "Get Pain Logs (GET /pain-logs)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/pain-logs", "host": ["{{base_url}}"], "path": ["pain-logs"]}
+          }
+        }
+      ]
+    }
+  ]
+}

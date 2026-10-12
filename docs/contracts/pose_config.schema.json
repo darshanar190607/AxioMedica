@@ -1,0 +1,147 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:axiomedicaapp:pose_config:v1",
+  "title": "PoseConfig",
+  "description": "JSONB configuration stored in exercises.pose_config. Drives ALL on-device pose estimation logic — rep counting, ROM measurement, and form checking. Source of truth; never change without notifying both engineers.",
+  "type": "object",
+  "required": [
+    "camera_view",
+    "side_aware",
+    "landmarks",
+    "metrics",
+    "phases",
+    "rep_cycle",
+    "min_rep_duration_ms",
+    "form_rules",
+    "min_pose_confidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "camera_view": {
+      "type": "string",
+      "enum": ["front", "side_left", "side_right", "side_either"],
+      "description": "Required camera orientation. 'side_either' lets the engine pick based on injured_side."
+    },
+    "side_aware": {
+      "type": "boolean",
+      "description": "When true the engine selects left/right landmark variants based on the patient's injured_side field."
+    },
+    "landmarks": {
+      "type": "object",
+      "description": "Map of semantic landmark names to MediaPipe BlazePose landmark indices (0-32). Include both left_ and right_ variants for side_aware exercises.",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 32
+      },
+      "minProperties": 1
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Computed values the engine derives from landmarks each frame. Referenced by phases and form_rules. Built-in metric 'rep_duration_ms' is always available without declaring it here.",
+      "items": { "$ref": "#/definitions/Metric" }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 2,
+      "description": "Named movement states. The engine evaluates each frame and labels it with the first matching phase.",
+      "items": { "$ref": "#/definitions/Phase" }
+    },
+    "rep_cycle": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" },
+      "description": "Ordered sequence of phase names that constitute one complete repetition, e.g. ['down','up','down']."
+    },
+    "min_rep_duration_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Reps completed faster than this value (ms) automatically receive a 'too_fast' error."
+    },
+    "form_rules": {
+      "type": "array",
+      "description": "Ordered list of checks run each frame. First violation wins for a given error id per rep.",
+      "items": { "$ref": "#/definitions/FormRule" }
+    },
+    "min_pose_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Frames where any required landmark has a visibility score below this value are skipped and may trigger 'low_confidence'."
+    }
+  },
+
+  "definitions": {
+    "ThresholdCheck": {
+      "type": "object",
+      "description": "Machine-readable threshold condition on a named metric.",
+      "required": ["metric", "operator", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "metric":   { "type": "string", "description": "Name of metric from the metrics array, or the built-in 'rep_duration_ms'." },
+        "operator": { "type": "string", "enum": ["lt","lte","gt","gte","between"] },
+        "value":    { "type": "number", "description": "Threshold value. For 'between', the lower bound." },
+        "value_max":{ "type": "number", "description": "Upper bound (required only when operator is 'between')." }
+      }
+    },
+
+    "Metric": {
+      "description": "A scalar value the engine computes per-frame from BlazePose landmarks.",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Angle metric: computes the interior angle (degrees) at the pivot landmark.",
+          "required": ["name","type","joints"],
+          "additionalProperties": false,
+          "properties": {
+            "name":   { "type": "string", "description": "Unique name; referenced by phases and form_rules." },
+            "type":   { "type": "string", "const": "angle" },
+            "joints": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "Three landmark names: [proximal, pivot, distal]. Angle is measured at pivot."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Vertical delta metric: signed vertical distance (normalized 0-1 screen coords, positive = upward) between two landmarks.",
+          "required": ["name","type","landmark","reference_landmark"],
+          "additionalProperties": false,
+          "properties": {
+            "name":                { "type": "string" },
+            "type":                { "type": "string", "const": "vertical_delta" },
+            "landmark":            { "type": "string", "description": "The moving landmark (e.g. left_heel)." },
+            "reference_landmark":  { "type": "string", "description": "Static reference landmark (e.g. left_ankle)." }
+          }
+        }
+      ]
+    },
+
+    "Phase": {
+      "type": "object",
+      "description": "A named movement state defined by a single metric threshold.",
+      "required": ["name","condition"],
+      "additionalProperties": false,
+      "properties": {
+        "name":      { "type": "string", "description": "Phase name referenced in rep_cycle." },
+        "condition": { "$ref": "#/definitions/ThresholdCheck" }
+      }
+    },
+
+    "FormRule": {
+      "type": "object",
+      "description": "A form-quality check that fires an error code and surfaces a coaching cue.",
+      "required": ["id","check","cue"],
+      "additionalProperties": false,
+      "properties": {
+        "id":    { "type": "string", "description": "Error code id (must match an entry in error_codes.md)." },
+        "check": { "$ref": "#/definitions/ThresholdCheck" },
+        "cue":   { "type": "string", "description": "Plain-English coaching cue displayed to the patient when this rule fires." }
+      }
+    }
+  }
+}

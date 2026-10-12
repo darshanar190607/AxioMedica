@@ -1,0 +1,29 @@
+﻿# CODEOWNERS — GitHub auto-requests review from the right person on every PR.
+# Format: <pattern>  <github-username(s)>
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# ─── Global fallback ──────────────────────────────────────────────────────────
+*                           @PersonA @PersonB
+
+# ─── Backend (Python / FastAPI) ───────────────────────────────────────────────
+/backend/                   @PersonA
+/backend/app/ml/            @PersonA @PersonB
+
+# ─── ML pipeline ──────────────────────────────────────────────────────────────
+/ml/                        @PersonB
+
+# ─── Mobile / React-Native UI ─────────────────────────────────────────────────
+/mobile/                    @PersonA
+/mobile/src/pose/           @PersonA @PersonB
+
+# ─── Shared contracts (schema-level changes need both reviewers) ──────────────
+/docs/contracts/            @PersonA @PersonB
+
+# ─── Docs & ADRs ──────────────────────────────────────────────────────────────
+/docs/                      @PersonA @PersonB
+
+# ─── Scripts ──────────────────────────────────────────────────────────────────
+/scripts/                   @PersonA @PersonB
+
+# ─── CI / GitHub config ───────────────────────────────────────────────────────
+/.github/                   @PersonA @PersonB
