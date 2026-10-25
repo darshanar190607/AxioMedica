@@ -65,6 +65,17 @@ export const authApi = {
   },
 
   /**
+   * Fetch current authenticated user identity (role, email, full_name).
+   */
+  async getUser() {
+    const data = await apiClient('/auth/me', { method: 'GET' });
+    if (data?.id) {
+      await tokenStorage.setItem(StorageKeys.USER, data);
+    }
+    return data;
+  },
+
+  /**
    * Fetch current authenticated patient's profile.
    */
   async getMe() {

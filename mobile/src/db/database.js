@@ -5,14 +5,14 @@
  * Provides web and test memory fallback.
  */
 let Platform = { OS: 'ios' };
-const isTestEnv = typeof process !== 'undefined' && (process.env?.NODE_ENV === 'test' || Boolean(process.env?.JEST_WORKER_ID));
-if (!isTestEnv && typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-  try {
-    const rn = require('react-native');
-    if (rn?.Platform) Platform = rn.Platform;
-  } catch {
-    // Fallback
-  }
+try {
+  const rn = require('react-native');
+  if (rn?.Platform) Platform = rn.Platform;
+} catch {
+  // Fallback
+}
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  Platform = { OS: 'web' };
 }
 
 let _dbInstance = null;

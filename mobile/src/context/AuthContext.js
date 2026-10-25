@@ -60,11 +60,22 @@ export function AuthProvider({ children }) {
 
         // Try fresh profile from server if online
         try {
-          const freshPatient = await authApi.getMe();
-          if (isMounted && freshPatient) {
-            setPatient(freshPatient);
-            if (freshPatient.user) {
-              setUser(freshPatient.user);
+          const freshUser = await authApi.getUser();
+          if (isMounted && freshUser) {
+            setUser(freshUser);
+            await tokenStorage.setItem(StorageKeys.USER, freshUser);
+            if (freshUser.role === 'patient') {
+              try {
+                const freshPatient = await authApi.getMe();
+                if (isMounted && freshPatient) {
+                  setPatient(freshPatient);
+                  await tokenStorage.setItem(StorageKeys.PATIENT, freshPatient);
+                }
+              } catch {
+                // Ignore patient profile net err
+              }
+            } else {
+              setPatient(null);
             }
           }
         } catch (netErr) {
@@ -102,26 +113,46 @@ export function AuthProvider({ children }) {
     setIsLoading(true);
     try {
       if (isMockEnabled()) {
-        // Mock demo login
-        setUser({ id: 'mock-user-1', email, role: 'patient' });
-        setPatient(mockPatient);
+        const isClinicianUser = email.toLowerCase().includes('doctor') || email.toLowerCase().includes('clinician');
+        const role = isClinicianUser ? 'clinician' : 'patient';
+        const mockUser = {
+          id: isClinicianUser ? 'mock-clinician-1' : 'mock-user-1',
+          email,
+          role,
+          full_name: isClinicianUser ? 'Dr. Michael Torres' : 'Sarah Johnson',
+        };
+        setUser(mockUser);
+        setPatient(isClinicianUser ? null : mockPatient);
         setToken('mock-access-token');
         setIsAuthenticated(true);
-        return { success: true };
+        return { success: true, role };
       }
 
       const loginData = await authApi.login(email, password);
       setToken(loginData.access_token);
 
-      // Fetch patient profile
-      const patientData = await authApi.getMe();
-      setPatient(patientData);
-      if (patientData?.user) {
-        setUser(patientData.user);
+      // 1. Fetch user identity to inspect role (patient vs clinician vs admin)
+      const userProfile = await authApi.getUser();
+      setUser(userProfile);
+      await tokenStorage.setItem(StorageKeys.USER, userProfile);
+
+      const userRole = userProfile?.role || 'patient';
+
+      // 2. Only fetch patient profile if user is a patient (clinicians do not have /patients/me)
+      if (userRole === 'patient') {
+        try {
+          const patientData = await authApi.getMe();
+          setPatient(patientData);
+          await tokenStorage.setItem(StorageKeys.PATIENT, patientData);
+        } catch (patientErr) {
+          console.warn('Could not load patient profile:', patientErr.message);
+        }
+      } else {
+        setPatient(null);
       }
 
       setIsAuthenticated(true);
-      return { success: true, data: loginData };
+      return { success: true, role: userRole, data: loginData };
     } catch (err) {
       const msg = err.message || 'Login failed. Please check your credentials.';
       setError(msg);
@@ -152,30 +183,32 @@ export function AuthProvider({ children }) {
     }
     try {
       const fresh = await authApi.getMe();
-      setPatient(fresh);
-      if (fresh?.user) {
-        setUser(fresh.user);
+      if (fresh) {
+        setPatient(fresh);
+        if (fresh?.user) {
+          setUser(fresh.user);
+        }
       }
       return fresh;
     } catch (err) {
-      // Return existing patient if offline
-      return patient;
+      return null;
     }
-  }, [patient]);
+  }, []);
 
   const updatePatient = useCallback(async (updates) => {
     if (isMockEnabled()) {
-      const updated = { ...patient, ...updates };
-      setPatient(updated);
-      return updated;
+      setPatient(prev => ({ ...prev, ...updates }));
+      return updates;
     }
     const updated = await authApi.updateMe(updates);
-    setPatient(updated);
-    if (updated?.user) {
-      setUser(updated.user);
+    if (updated) {
+      setPatient(updated);
+      if (updated?.user) {
+        setUser(updated.user);
+      }
     }
     return updated;
-  }, [patient]);
+  }, []);
 
   const clearError = useCallback(() => setError(null), []);
 

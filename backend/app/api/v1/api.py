@@ -46,3 +46,7 @@ api_router.include_router(pain_logs.router)
 # ML Serving router (Person B placeholder)
 api_router.include_router(ml_router)
 
+# Text-To-Speech router
+from app.api.v1.endpoints import tts
+api_router.include_router(tts.router)
+

@@ -153,10 +153,11 @@ export async function apiClient(endpoint, options = {}, retryOn401 = true) {
 
   if (!response.ok) {
     const errorMsg =
+      responseData?.error?.message ||
       responseData?.detail ||
       responseData?.message ||
       `Request failed with status ${response.status}`;
-    const errorCode = responseData?.code || 'API_ERROR';
+    const errorCode = responseData?.error?.code || responseData?.code || 'API_ERROR';
     throw new ApiError(errorMsg, response.status, errorCode, responseData);
   }
 

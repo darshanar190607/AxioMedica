@@ -15,6 +15,7 @@ import MyPlanScreen         from '../screens/MyPlanScreen';
 import ProfileScreen        from '../screens/ProfileScreen';
 import ProgressScreen       from '../screens/ProgressScreen';
 import SessionResultsScreen from '../screens/SessionResultsScreen';
+import ClinicianScreen      from '../screens/ClinicianScreen';
 
 const Stack = createStackNavigator();
 
@@ -56,6 +57,7 @@ export default function AppNavigator() {
           <Stack.Screen name="Landing"        component={LandingScreen} />
           <Stack.Screen name="Login"          component={LoginScreen} />
           <Stack.Screen name="Main"           component={MainTabs} />
+          <Stack.Screen name="Clinician"      component={ClinicianScreen} />
           <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />
           <Stack.Screen name="LiveMonitor"    component={LiveMonitorScreen} />
           <Stack.Screen name="SessionResults" component={SessionResultsScreen} />

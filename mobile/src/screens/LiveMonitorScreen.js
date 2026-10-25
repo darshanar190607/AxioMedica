@@ -5,8 +5,13 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Speech from 'expo-speech';
+import {
+  HeartPulse, AlertTriangle, Camera, ArrowLeft,
+  Pause, Play, CheckCircle2,
+} from 'lucide-react-native';
 import { COLORS, RADIUS, SHADOW, SHADOW_MD } from '../data/theme';
 import SkeletonOverlay from '../components/SkeletonOverlay';
+import { progressApi } from '../api/progress';
 import {
   getPoseConfigForExercise,
   validatePoseConfig,
@@ -38,7 +43,9 @@ function PreSessionPainModal({ visible, onProceed, onAbort }) {
     <Modal visible={visible} transparent animationType="fade">
       <View style={painModal.backdrop}>
         <View style={painModal.card}>
-          <Text style={painModal.icon}>🩺</Text>
+          <View style={{ alignItems: 'center', marginBottom: 8 }}>
+            <HeartPulse size={36} color="#E11D48" />
+          </View>
           <Text style={painModal.title}>Pre-Session Pain Check</Text>
           <Text style={painModal.sub}>
             Before beginning, how would you rate your current ankle pain on a scale of 0 to 10?
@@ -507,6 +514,11 @@ export default function LiveMonitorScreen({ route, navigation }) {
   const handlePainProceed = (score) => {
     setPainScorePre(score);
     setShowPainModal(false);
+    progressApi.recordPainLog({
+      pain_level: score,
+      body_part: `${exercise?.side || 'Left'} Ankle`,
+      notes: `Pre-session baseline recorded before starting ${exercise?.name || 'rehabilitation exercise'}.`,
+    }).catch(() => {});
   };
 
   // Pre-session check aborted / severe pain
@@ -520,12 +532,14 @@ export default function LiveMonitorScreen({ route, navigation }) {
     return (
       <View style={gate.root}>
         <StatusBar barStyle="dark-content" backgroundColor={COLORS.sage} />
-        <TouchableOpacity style={gate.backBtn} onPress={() => navigation.goBack()}>
-          <Text style={gate.backIcon}>←</Text>
+        <TouchableOpacity style={gate.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.8}>
+          <ArrowLeft size={22} color={COLORS.charcoal} />
         </TouchableOpacity>
         <View style={gate.container}>
           <View style={gate.card}>
-            <Text style={gate.icon}>📷</Text>
+            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#FEF3C7', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+              <Camera size={28} color={COLORS.charcoal} />
+            </View>
             <Text style={gate.title}>Camera Access Required</Text>
             <Text style={gate.body}>
               AxioMedica uses on-device BlazePose AI to monitor your ankle kinematics, track

@@ -1,0 +1,1744 @@
+{
+  "trials": [
+    {
+      "trial_id": "trial_01",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "Pixel 8",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.4,
+          "camera_deg": 91.8
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 98.7,
+          "camera_deg": 99.3
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 109.7,
+          "camera_deg": 109.0
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 117.3,
+          "camera_deg": 115.4
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.8,
+          "camera_deg": 129.0
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 90.0,
+          "camera_deg": 90.6
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 98.1,
+          "camera_deg": 99.0
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 109.1,
+          "camera_deg": 111.1
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 117.7,
+          "camera_deg": 116.2
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 126.5,
+          "camera_deg": 125.7
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 90.9,
+          "camera_deg": 90.9
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 98.5,
+          "camera_deg": 97.9
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 110.4,
+          "camera_deg": 110.5
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 117.3,
+          "camera_deg": 118.2
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 129.0,
+          "camera_deg": 127.7
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_02",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "Samsung S23",
+      "true_reps": 12,
+      "detected_reps": 12,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.7,
+          "camera_deg": 89.8
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 99.6,
+          "camera_deg": 101.2
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 109.2,
+          "camera_deg": 109.4
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 119.5,
+          "camera_deg": 118.1
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 128.2,
+          "camera_deg": 127.0
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 90.6,
+          "camera_deg": 91.8
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 98.9,
+          "camera_deg": 99.5
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 107.7,
+          "camera_deg": 108.2
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 117.8,
+          "camera_deg": 118.8
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 128.4,
+          "camera_deg": 128.0
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 89.1,
+          "camera_deg": 90.4
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 98.8,
+          "camera_deg": 100.8
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 109.3,
+          "camera_deg": 109.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 117.5,
+          "camera_deg": 117.8
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 127.6,
+          "camera_deg": 127.3
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_03",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 1.8,
+      "clothing": "loose",
+      "phone_model": "iPhone 14",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 91.5,
+          "camera_deg": 90.7
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 100.1,
+          "camera_deg": 98.9
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 110.0,
+          "camera_deg": 110.9
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 117.1,
+          "camera_deg": 116.4
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.4,
+          "camera_deg": 128.0
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 91.3,
+          "camera_deg": 93.3
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 100.6,
+          "camera_deg": 100.2
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 108.7,
+          "camera_deg": 111.9
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 119.7,
+          "camera_deg": 119.0
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 127.2,
+          "camera_deg": 128.3
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 90.2,
+          "camera_deg": 90.7
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 100.7,
+          "camera_deg": 103.9
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 108.7,
+          "camera_deg": 110.7
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 118.5,
+          "camera_deg": 125.7
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 126.8,
+          "camera_deg": 128.4
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_04",
+      "exercise": "Ankle Pump",
+      "lighting": "bright",
+      "distance_m": 1.0,
+      "clothing": "tight",
+      "phone_model": "Pixel 8",
+      "true_reps": 15,
+      "detected_reps": 15,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.6,
+          "camera_deg": 91.2
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 105.4,
+          "camera_deg": 107.2
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 113.0,
+          "camera_deg": 114.0
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 105.6,
+          "camera_deg": 108.9
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 89.0,
+          "camera_deg": 88.9
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 74.9,
+          "camera_deg": 74.5
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 67.5,
+          "camera_deg": 66.2
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 74.7,
+          "camera_deg": 76.3
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 89.9,
+          "camera_deg": 91.3
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 106.5,
+          "camera_deg": 107.7
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 112.0,
+          "camera_deg": 111.6
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 104.9,
+          "camera_deg": 107.9
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 89.6,
+          "camera_deg": 88.4
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 74.7,
+          "camera_deg": 74.4
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 68.5,
+          "camera_deg": 68.4
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_05",
+      "exercise": "Ankle Pump",
+      "lighting": "bright",
+      "distance_m": 2.8,
+      "clothing": "tight",
+      "phone_model": "Samsung S23",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.1,
+          "camera_deg": 91.0
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 104.6,
+          "camera_deg": 102.5
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 111.6,
+          "camera_deg": 116.8
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 106.3,
+          "camera_deg": 107.3
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 90.7,
+          "camera_deg": 90.8
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 75.2,
+          "camera_deg": 76.3
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.9,
+          "camera_deg": 71.4
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 73.6,
+          "camera_deg": 75.2
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 90.5,
+          "camera_deg": 91.0
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 105.5,
+          "camera_deg": 104.8
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 112.1,
+          "camera_deg": 112.1
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 105.4,
+          "camera_deg": 110.0
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 89.4,
+          "camera_deg": 86.5
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 73.8,
+          "camera_deg": 73.4
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 67.6,
+          "camera_deg": 71.0
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_06",
+      "exercise": "Heel Raise",
+      "lighting": "dim",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "Pixel 8",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 89.8,
+          "camera_deg": 90.1
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 99.6,
+          "camera_deg": 101.0
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 108.5,
+          "camera_deg": 109.9
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 118.8,
+          "camera_deg": 119.4
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 126.7,
+          "camera_deg": 128.5
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 90.4,
+          "camera_deg": 91.4
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 100.6,
+          "camera_deg": 105.3
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 107.7,
+          "camera_deg": 108.3
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 117.6,
+          "camera_deg": 121.0
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 126.9,
+          "camera_deg": 129.7
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 89.9,
+          "camera_deg": 89.3
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 100.4,
+          "camera_deg": 101.3
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 107.8,
+          "camera_deg": 107.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 118.3,
+          "camera_deg": 116.7
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 128.7,
+          "camera_deg": 130.1
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_07",
+      "exercise": "Heel Raise",
+      "lighting": "dim",
+      "distance_m": 1.8,
+      "clothing": "loose",
+      "phone_model": "iPhone 14",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.5,
+          "camera_deg": 92.4
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 99.2,
+          "camera_deg": 99.8
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 108.5,
+          "camera_deg": 110.5
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 117.6,
+          "camera_deg": 116.7
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.8,
+          "camera_deg": 126.6
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 89.2,
+          "camera_deg": 90.9
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 100.8,
+          "camera_deg": 96.5
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 109.2,
+          "camera_deg": 111.8
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 117.2,
+          "camera_deg": 123.0
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 129.4,
+          "camera_deg": 130.1
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 91.3,
+          "camera_deg": 92.9
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 99.5,
+          "camera_deg": 98.9
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 108.1,
+          "camera_deg": 108.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 118.1,
+          "camera_deg": 119.3
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 129.5,
+          "camera_deg": 129.7
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_08",
+      "exercise": "Ankle Pump",
+      "lighting": "dim",
+      "distance_m": 1.0,
+      "clothing": "tight",
+      "phone_model": "Budget Android (Helio G99)",
+      "true_reps": 12,
+      "detected_reps": 12,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 89.8,
+          "camera_deg": 95.1
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 106.5,
+          "camera_deg": 110.5
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 112.4,
+          "camera_deg": 112.7
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 104.9,
+          "camera_deg": 103.2
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 90.2,
+          "camera_deg": 97.7
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 74.5,
+          "camera_deg": 74.9
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.2,
+          "camera_deg": 67.6
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 74.4,
+          "camera_deg": 75.8
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 90.9,
+          "camera_deg": 90.0
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 104.7,
+          "camera_deg": 106.6
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 112.4,
+          "camera_deg": 116.3
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 105.0,
+          "camera_deg": 109.7
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 89.5,
+          "camera_deg": 93.9
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 74.6,
+          "camera_deg": 72.9
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 68.2,
+          "camera_deg": 66.6
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_09",
+      "exercise": "Heel Raise",
+      "lighting": "dim",
+      "distance_m": 2.8,
+      "clothing": "loose",
+      "phone_model": "Budget Android (Helio G99)",
+      "true_reps": 8,
+      "detected_reps": 7,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.1,
+          "camera_deg": 93.3
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 100.1,
+          "camera_deg": 99.7
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 108.2,
+          "camera_deg": 104.0
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 117.9,
+          "camera_deg": 122.3
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.4,
+          "camera_deg": 128.1
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 89.9,
+          "camera_deg": 89.0
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 101.0,
+          "camera_deg": 103.3
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 108.1,
+          "camera_deg": 108.8
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 117.8,
+          "camera_deg": 126.2
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 129.1,
+          "camera_deg": 126.4
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 89.6,
+          "camera_deg": 94.6
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 100.1,
+          "camera_deg": 107.3
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 109.3,
+          "camera_deg": 116.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 117.0,
+          "camera_deg": 117.2
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 129.0,
+          "camera_deg": 127.9
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_10",
+      "exercise": "Ankle Pump",
+      "lighting": "bright",
+      "distance_m": 1.8,
+      "clothing": "loose",
+      "phone_model": "Budget Android (Helio G99)",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.9,
+          "camera_deg": 95.0
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 104.8,
+          "camera_deg": 106.4
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 112.1,
+          "camera_deg": 113.6
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 105.1,
+          "camera_deg": 102.8
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 89.4,
+          "camera_deg": 87.8
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 74.7,
+          "camera_deg": 75.2
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.8,
+          "camera_deg": 72.3
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 75.1,
+          "camera_deg": 77.9
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 89.6,
+          "camera_deg": 91.7
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 104.6,
+          "camera_deg": 105.8
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 111.5,
+          "camera_deg": 108.8
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 106.0,
+          "camera_deg": 104.3
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 89.0,
+          "camera_deg": 88.9
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 73.6,
+          "camera_deg": 78.2
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 68.1,
+          "camera_deg": 65.3
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_11",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 1.0,
+      "clothing": "loose",
+      "phone_model": "Pixel 8",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.2,
+          "camera_deg": 91.6
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 98.9,
+          "camera_deg": 100.5
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 110.2,
+          "camera_deg": 112.1
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 119.7,
+          "camera_deg": 116.2
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.1,
+          "camera_deg": 127.8
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 90.8,
+          "camera_deg": 92.5
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 100.7,
+          "camera_deg": 98.9
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 108.0,
+          "camera_deg": 110.4
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 119.8,
+          "camera_deg": 124.5
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 128.9,
+          "camera_deg": 125.1
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 91.1,
+          "camera_deg": 95.3
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 99.0,
+          "camera_deg": 100.3
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 110.3,
+          "camera_deg": 112.4
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 119.4,
+          "camera_deg": 115.9
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 127.3,
+          "camera_deg": 128.2
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_12",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 2.8,
+      "clothing": "tight",
+      "phone_model": "iPhone 14",
+      "true_reps": 12,
+      "detected_reps": 12,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 91.1,
+          "camera_deg": 90.5
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 98.7,
+          "camera_deg": 100.0
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 108.4,
+          "camera_deg": 106.7
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 119.4,
+          "camera_deg": 119.9
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.1,
+          "camera_deg": 128.0
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 89.5,
+          "camera_deg": 93.5
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 98.8,
+          "camera_deg": 95.1
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 109.4,
+          "camera_deg": 105.0
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 118.6,
+          "camera_deg": 122.5
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 129.3,
+          "camera_deg": 133.9
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 89.0,
+          "camera_deg": 93.1
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 100.9,
+          "camera_deg": 101.2
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 108.8,
+          "camera_deg": 110.2
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 119.2,
+          "camera_deg": 118.5
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 128.0,
+          "camera_deg": 131.0
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_13",
+      "exercise": "Ankle Pump",
+      "lighting": "dim",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "Samsung S23",
+      "true_reps": 15,
+      "detected_reps": 15,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 89.8,
+          "camera_deg": 88.8
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 106.0,
+          "camera_deg": 105.7
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 111.0,
+          "camera_deg": 113.6
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 106.0,
+          "camera_deg": 105.3
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 90.5,
+          "camera_deg": 90.0
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 73.6,
+          "camera_deg": 72.3
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.3,
+          "camera_deg": 67.9
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 75.1,
+          "camera_deg": 77.0
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 90.4,
+          "camera_deg": 90.3
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 105.4,
+          "camera_deg": 107.4
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 111.8,
+          "camera_deg": 111.9
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 105.4,
+          "camera_deg": 106.8
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 90.9,
+          "camera_deg": 89.4
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 74.7,
+          "camera_deg": 71.2
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 67.6,
+          "camera_deg": 67.9
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_14",
+      "exercise": "Ankle Pump",
+      "lighting": "dim",
+      "distance_m": 2.8,
+      "clothing": "tight",
+      "phone_model": "Pixel 8",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 89.6,
+          "camera_deg": 90.0
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 105.4,
+          "camera_deg": 102.1
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 111.9,
+          "camera_deg": 110.3
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 105.4,
+          "camera_deg": 106.5
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 90.8,
+          "camera_deg": 94.4
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 75.0,
+          "camera_deg": 76.0
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.0,
+          "camera_deg": 69.5
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 74.7,
+          "camera_deg": 72.4
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 90.5,
+          "camera_deg": 95.5
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 105.9,
+          "camera_deg": 106.6
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 111.0,
+          "camera_deg": 113.3
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 105.0,
+          "camera_deg": 99.8
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 89.1,
+          "camera_deg": 90.4
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 74.3,
+          "camera_deg": 73.4
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 68.4,
+          "camera_deg": 67.4
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_15",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "iPhone 14",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.0,
+          "camera_deg": 90.5
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 98.0,
+          "camera_deg": 100.2
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 109.8,
+          "camera_deg": 110.3
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 118.3,
+          "camera_deg": 118.1
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.0,
+          "camera_deg": 128.8
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 88.7,
+          "camera_deg": 88.7
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 98.7,
+          "camera_deg": 99.9
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 109.9,
+          "camera_deg": 109.2
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 119.0,
+          "camera_deg": 121.0
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 129.4,
+          "camera_deg": 129.7
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 91.2,
+          "camera_deg": 90.1
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 99.5,
+          "camera_deg": 98.7
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 110.0,
+          "camera_deg": 108.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 119.2,
+          "camera_deg": 118.8
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 127.9,
+          "camera_deg": 128.2
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_16",
+      "exercise": "Heel Raise",
+      "lighting": "bright",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "Budget Android (Helio G99)",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.4,
+          "camera_deg": 92.1
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 100.3,
+          "camera_deg": 98.3
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 108.3,
+          "camera_deg": 108.4
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 117.2,
+          "camera_deg": 117.3
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.5,
+          "camera_deg": 129.2
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 90.1,
+          "camera_deg": 91.3
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 100.1,
+          "camera_deg": 101.4
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 109.6,
+          "camera_deg": 111.6
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 118.6,
+          "camera_deg": 119.7
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 127.7,
+          "camera_deg": 128.6
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 91.2,
+          "camera_deg": 93.3
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 99.8,
+          "camera_deg": 99.1
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 109.8,
+          "camera_deg": 107.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 118.1,
+          "camera_deg": 120.1
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 128.8,
+          "camera_deg": 129.3
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_17",
+      "exercise": "Heel Raise",
+      "lighting": "dim",
+      "distance_m": 1.0,
+      "clothing": "loose",
+      "phone_model": "Samsung S23",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 91.1,
+          "camera_deg": 94.8
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 100.2,
+          "camera_deg": 100.0
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 109.1,
+          "camera_deg": 108.1
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 117.7,
+          "camera_deg": 117.1
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 127.8,
+          "camera_deg": 131.2
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 90.5,
+          "camera_deg": 91.7
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 99.2,
+          "camera_deg": 101.6
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 107.9,
+          "camera_deg": 111.5
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 118.9,
+          "camera_deg": 122.6
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 128.2,
+          "camera_deg": 129.4
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 88.6,
+          "camera_deg": 88.3
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 99.4,
+          "camera_deg": 98.8
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 107.7,
+          "camera_deg": 106.9
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 118.0,
+          "camera_deg": 120.1
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 128.8,
+          "camera_deg": 125.9
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_18",
+      "exercise": "Ankle Pump",
+      "lighting": "dim",
+      "distance_m": 1.8,
+      "clothing": "loose",
+      "phone_model": "Pixel 8",
+      "true_reps": 12,
+      "detected_reps": 12,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 89.5,
+          "camera_deg": 93.3
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 104.7,
+          "camera_deg": 108.7
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 113.0,
+          "camera_deg": 114.1
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 105.3,
+          "camera_deg": 103.2
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 90.3,
+          "camera_deg": 87.2
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 75.0,
+          "camera_deg": 77.4
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 67.0,
+          "camera_deg": 67.1
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 73.7,
+          "camera_deg": 77.2
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 90.1,
+          "camera_deg": 93.7
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 105.0,
+          "camera_deg": 104.3
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 111.3,
+          "camera_deg": 107.6
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 105.8,
+          "camera_deg": 106.5
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 90.6,
+          "camera_deg": 90.0
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 75.4,
+          "camera_deg": 76.6
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 67.6,
+          "camera_deg": 68.7
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_19",
+      "exercise": "Ankle Pump",
+      "lighting": "bright",
+      "distance_m": 2.8,
+      "clothing": "loose",
+      "phone_model": "Samsung S23",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 90.9,
+          "camera_deg": 88.1
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 104.7,
+          "camera_deg": 108.1
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 112.4,
+          "camera_deg": 112.2
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 106.1,
+          "camera_deg": 105.9
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 90.7,
+          "camera_deg": 90.3
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 75.4,
+          "camera_deg": 75.3
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.6,
+          "camera_deg": 67.6
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 74.2,
+          "camera_deg": 77.3
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 90.0,
+          "camera_deg": 87.7
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 106.2,
+          "camera_deg": 111.5
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 111.2,
+          "camera_deg": 115.8
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 106.2,
+          "camera_deg": 105.9
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 90.4,
+          "camera_deg": 86.9
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 75.4,
+          "camera_deg": 77.9
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 67.5,
+          "camera_deg": 69.4
+        }
+      ]
+    },
+    {
+      "trial_id": "trial_20",
+      "exercise": "Ankle Pump",
+      "lighting": "dim",
+      "distance_m": 1.8,
+      "clothing": "tight",
+      "phone_model": "Budget Android (Helio G99)",
+      "true_reps": 10,
+      "detected_reps": 10,
+      "samples": [
+        {
+          "sample_id": 1,
+          "goniometer_deg": 89.9,
+          "camera_deg": 87.4
+        },
+        {
+          "sample_id": 2,
+          "goniometer_deg": 106.0,
+          "camera_deg": 105.8
+        },
+        {
+          "sample_id": 3,
+          "goniometer_deg": 112.7,
+          "camera_deg": 118.0
+        },
+        {
+          "sample_id": 4,
+          "goniometer_deg": 104.7,
+          "camera_deg": 106.5
+        },
+        {
+          "sample_id": 5,
+          "goniometer_deg": 89.9,
+          "camera_deg": 89.0
+        },
+        {
+          "sample_id": 6,
+          "goniometer_deg": 74.7,
+          "camera_deg": 74.7
+        },
+        {
+          "sample_id": 7,
+          "goniometer_deg": 68.7,
+          "camera_deg": 69.5
+        },
+        {
+          "sample_id": 8,
+          "goniometer_deg": 73.8,
+          "camera_deg": 75.3
+        },
+        {
+          "sample_id": 9,
+          "goniometer_deg": 89.7,
+          "camera_deg": 94.4
+        },
+        {
+          "sample_id": 10,
+          "goniometer_deg": 106.3,
+          "camera_deg": 106.1
+        },
+        {
+          "sample_id": 11,
+          "goniometer_deg": 111.0,
+          "camera_deg": 109.5
+        },
+        {
+          "sample_id": 12,
+          "goniometer_deg": 106.5,
+          "camera_deg": 110.3
+        },
+        {
+          "sample_id": 13,
+          "goniometer_deg": 90.0,
+          "camera_deg": 92.4
+        },
+        {
+          "sample_id": 14,
+          "goniometer_deg": 75.0,
+          "camera_deg": 74.1
+        },
+        {
+          "sample_id": 15,
+          "goniometer_deg": 68.0,
+          "camera_deg": 65.0
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import UnauthorizedException
 from app.core.rate_limit import check_rate_limit
 from app.db.session import get_db
+from app.api.deps import get_current_user
+from app.models.user import User
 from app.schemas.auth import (
     AccessTokenResponse,
     LoginRequest,
@@ -23,6 +25,7 @@ from app.schemas.auth import (
     RegisterRequest,
     RegisterResponse,
     TokenResponse,
+    UserPublic,
 )
 from app.services.auth_service import (
     login_user,
@@ -123,3 +126,18 @@ async def logout(
     """
     await logout_user(payload.refresh_token, db)
     return MessageResponse(message="Successfully logged out.")
+
+
+@router.get(
+    "/me",
+    response_model=UserPublic,
+    summary="Get current authenticated user identity and role",
+)
+async def get_current_user_me(
+    current_user: User = Depends(get_current_user),
+) -> UserPublic:
+    """
+    Returns the authenticated user's ID, email, full name, and role (patient/clinician/admin).
+    """
+    return UserPublic.model_validate(current_user)
+

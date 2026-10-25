@@ -113,9 +113,15 @@ class PatientProfile(BaseModel):
 
     id: uuid.UUID
     user_id: uuid.UUID
-    date_of_birth: Optional[datetime]
-    phone: Optional[str]
-    bio: Optional[str]
+    date_of_birth: Optional[datetime] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    injured_ankle: Optional[str] = "Left"
+    injury_type: Optional[str] = "Ankle Sprain"
+    recovery_stage: Optional[int] = 2
+    current_week: Optional[int] = 1
+    total_weeks: Optional[int] = 6
+    recovery_percent: Optional[int] = 0
     created_at: datetime
     updated_at: datetime
     user: UserPublic

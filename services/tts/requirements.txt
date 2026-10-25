@@ -1,0 +1,8 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+soundfile>=0.12.1
+numpy>=1.26.0
+pydantic>=2.10.0
+# PyTorch and OmniVoice:
+# Install torch via: pip install torch --index-url https://download.pytorch.org/whl/cu121 (or cpu)
+# omnivoice
