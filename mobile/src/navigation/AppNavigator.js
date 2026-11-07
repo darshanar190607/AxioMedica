@@ -16,6 +16,7 @@ import ProfileScreen        from '../screens/ProfileScreen';
 import ProgressScreen       from '../screens/ProgressScreen';
 import SessionResultsScreen from '../screens/SessionResultsScreen';
 import ClinicianScreen      from '../screens/ClinicianScreen';
+import PoseTestScreen       from '../screens/PoseTestScreen';
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,7 @@ export default function AppNavigator() {
           <Stack.Screen name="Clinician"      component={ClinicianScreen} />
           <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />
           <Stack.Screen name="LiveMonitor"    component={LiveMonitorScreen} />
+          <Stack.Screen name="PoseTest"       component={PoseTestScreen} />
           <Stack.Screen name="SessionResults" component={SessionResultsScreen} />
           <Stack.Screen name="MyPlan"         component={MyPlanScreen} />
           <Stack.Screen name="Progress"       component={ProgressScreen} />
