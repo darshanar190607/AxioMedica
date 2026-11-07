@@ -36,6 +36,7 @@ ml/.env
 *.pth         # PyTorch checkpoint
 *.ckpt        # generic checkpoint
 *.tflite      # TensorFlow Lite
+!mobile/assets/models/*.tflite
 *.task        # MediaPipe task bundles
 *.onnx        # ONNX models
 *.h5          # Keras / HDF5

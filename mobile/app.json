@@ -6,11 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#8FAF8F"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.rehabstep.ai",
@@ -30,14 +25,6 @@
         "android.permission.CAMERA"
       ]
     },
-    "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "RehabStep AI needs camera access to track joint angles and evaluate rehabilitation exercise form in real time."
-        }
-      ]
-    ],
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
