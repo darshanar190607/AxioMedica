@@ -89,10 +89,10 @@ export default function PoseTestScreen({ navigation }) {
   };
 
   const handleBack = () => {
-    if (navigation?.goBack) {
+    if (navigation?.canGoBack && navigation.canGoBack()) {
       navigation.goBack();
     } else if (navigation?.navigate) {
-      navigation.navigate('Dashboard');
+      navigation.navigate('Landing');
     }
   };
 

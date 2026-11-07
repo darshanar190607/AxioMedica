@@ -6,17 +6,17 @@ import { View, StyleSheet, Platform } from 'react-native';
 
 import BottomNav from '../components/BottomNav';
 import { COLORS } from '../data/theme';
-import DashboardScreen      from '../screens/DashboardScreen';
+import DashboardScreen from '../screens/DashboardScreen';
 import ExerciseDetailScreen from '../screens/ExerciseDetailScreen';
-import LandingScreen        from '../screens/LandingScreen';
-import LiveMonitorScreen    from '../screens/LiveMonitorScreen';
-import LoginScreen          from '../screens/LoginScreen';
-import MyPlanScreen         from '../screens/MyPlanScreen';
-import ProfileScreen        from '../screens/ProfileScreen';
-import ProgressScreen       from '../screens/ProgressScreen';
+import LandingScreen from '../screens/LandingScreen';
+import LiveMonitorScreen from '../screens/LiveMonitorScreen';
+import LoginScreen from '../screens/LoginScreen';
+import MyPlanScreen from '../screens/MyPlanScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import ProgressScreen from '../screens/ProgressScreen';
 import SessionResultsScreen from '../screens/SessionResultsScreen';
-import ClinicianScreen      from '../screens/ClinicianScreen';
-import PoseTestScreen       from '../screens/PoseTestScreen';
+import ClinicianScreen from '../screens/ClinicianScreen';
+import PoseTestScreen from '../screens/PoseTestScreen';
 
 const Stack = createStackNavigator();
 
@@ -27,10 +27,10 @@ function MainTabs({ navigation }) {
   const renderTab = () => {
     switch (activeTab) {
       case 'Dashboard': return <DashboardScreen {...screenProps} />;
-      case 'MyPlan':    return <MyPlanScreen    {...screenProps} />;
-      case 'Progress':  return <ProgressScreen  {...screenProps} />;
-      case 'Profile':   return <ProfileScreen   {...screenProps} />;
-      default:          return <DashboardScreen {...screenProps} />;
+      case 'MyPlan': return <MyPlanScreen    {...screenProps} />;
+      case 'Progress': return <ProgressScreen  {...screenProps} />;
+      case 'Profile': return <ProfileScreen   {...screenProps} />;
+      default: return <DashboardScreen {...screenProps} />;
     }
   };
 
@@ -44,7 +44,22 @@ function MainTabs({ navigation }) {
 
 const linking = {
   prefixes: [],
-  config: { screens: {} },
+  config: {
+    screens: {
+      Landing: '',
+      Login: 'login',
+      Main: 'main',
+      Clinician: 'clinician',
+      ExerciseDetail: 'exercise-detail',
+      LiveMonitor: 'live-monitor',
+      PoseTest: 'pose-test',
+      SessionResults: 'session-results',
+      MyPlan: 'my-plan',
+      Progress: 'progress',
+      Dashboard: 'dashboard',
+      Profile: 'profile',
+    },
+  },
 };
 
 export default function AppNavigator() {
@@ -55,18 +70,18 @@ export default function AppNavigator() {
         documentTitle={{ formatter: () => 'RehabStep AI' }}
       >
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Landing">
-          <Stack.Screen name="Landing"        component={LandingScreen} />
-          <Stack.Screen name="Login"          component={LoginScreen} />
-          <Stack.Screen name="Main"           component={MainTabs} />
-          <Stack.Screen name="Clinician"      component={ClinicianScreen} />
+          <Stack.Screen name="Landing" component={LandingScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Main" component={MainTabs} />
+          <Stack.Screen name="Clinician" component={ClinicianScreen} />
           <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />
-          <Stack.Screen name="LiveMonitor"    component={LiveMonitorScreen} />
-          <Stack.Screen name="PoseTest"       component={PoseTestScreen} />
+          <Stack.Screen name="LiveMonitor" component={LiveMonitorScreen} />
+          <Stack.Screen name="PoseTest" component={PoseTestScreen} />
           <Stack.Screen name="SessionResults" component={SessionResultsScreen} />
-          <Stack.Screen name="MyPlan"         component={MyPlanScreen} />
-          <Stack.Screen name="Progress"       component={ProgressScreen} />
-          <Stack.Screen name="Dashboard"      component={DashboardScreen} />
-          <Stack.Screen name="Profile"        component={ProfileScreen} />
+          <Stack.Screen name="MyPlan" component={MyPlanScreen} />
+          <Stack.Screen name="Progress" component={ProgressScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
@@ -75,6 +90,6 @@ export default function AppNavigator() {
 
 const styles = StyleSheet.create({
   navRoot: { flex: 1 },
-  layout:  { flex: 1, backgroundColor: COLORS.background },
+  layout: { flex: 1, backgroundColor: COLORS.background },
   content: { flex: 1 },
 });

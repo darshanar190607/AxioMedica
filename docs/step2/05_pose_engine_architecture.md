@@ -154,3 +154,4 @@ Every frame produced by the pose engine adheres strictly to [`mobile/contracts/v
    If landmark visibility falls below $0.60$, downstream `MetricEngine` flags lower confidence, and `FormChecker` suppresses rep increments until visibility recovers.
 3. **Hardware Delegates:**
    Default configuration uses stable multi-threaded CPU inference. GPU acceleration (`['android-gpu']` / `['metal']`) is supported via provider parameters for high-end devices.
+
