@@ -174,3 +174,4 @@ export class PoseEngine {
 // Export singleton instance
 export const poseEngine = new PoseEngine();
 export default poseEngine;
+

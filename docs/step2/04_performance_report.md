@@ -64,3 +64,4 @@ The following values reflect empirical estimates based on published Google Media
    By opting for the single-stage full-frame letterboxed pipeline rather than continuous dual-model execution (`pose_detection` + affine warp + `pose_landmark`), CPU workload is reduced by $> 40\%$, ensuring the phone does not overheat during 15-minute rehabilitation sessions.
 3. **Non-Blocking UI Thread:**
    Inference executes synchronously on the dedicated frame processor worklet thread (`NativeThread`). Landmark frames are dispatched to the React Native JS thread via `Worklets.runOnJS`, ensuring the UI thread remains completely fluid at 60 FPS.
+
