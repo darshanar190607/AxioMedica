@@ -48,19 +48,19 @@ function generateSimulatedAnklePose(timestamp, isMirrored = false) {
   const ankleFlex = sinVal * 0.03;
 
   const raw = {
-    nose: { x: 0.50, y: 0.12, z: 0.0, visibility: 0.99 },
-    left_shoulder: { x: 0.43, y: 0.24, z: 0.0, visibility: 0.98 },
-    right_shoulder: { x: 0.57, y: 0.24, z: 0.0, visibility: 0.98 },
-    left_hip: { x: 0.45, y: 0.44, z: 0.0, visibility: 0.96 },
-    right_hip: { x: 0.55, y: 0.44, z: 0.0, visibility: 0.96 },
-    left_knee: { x: 0.44, y: 0.64, z: 0.0, visibility: 0.94 },
-    right_knee: { x: 0.56, y: 0.64, z: 0.0, visibility: 0.95 },
-    left_ankle: { x: 0.44, y: 0.82 - ankleFlex * 0.4, z: 0.0, visibility: 0.95 },
-    right_ankle: { x: 0.56, y: 0.82, z: 0.0, visibility: 0.96 },
-    left_heel: { x: 0.42, y: 0.86 - heelLift, z: 0.0, visibility: 0.93 },
-    right_heel: { x: 0.58, y: 0.86, z: 0.0, visibility: 0.94 },
-    left_foot_index: { x: 0.47, y: 0.87, z: 0.0, visibility: 0.95 },
-    right_foot_index: { x: 0.53, y: 0.87, z: 0.0, visibility: 0.95 },
+    nose: { x: 0.50, y: 0.22, z: 0.0, visibility: 0.99 },
+    left_shoulder: { x: 0.43, y: 0.32, z: 0.0, visibility: 0.98 },
+    right_shoulder: { x: 0.57, y: 0.32, z: 0.0, visibility: 0.98 },
+    left_hip: { x: 0.45, y: 0.48, z: 0.0, visibility: 0.96 },
+    right_hip: { x: 0.55, y: 0.48, z: 0.0, visibility: 0.96 },
+    left_knee: { x: 0.44, y: 0.65, z: 0.0, visibility: 0.94 },
+    right_knee: { x: 0.56, y: 0.65, z: 0.0, visibility: 0.95 },
+    left_ankle: { x: 0.44, y: 0.79 - ankleFlex * 0.4, z: 0.0, visibility: 0.95 },
+    right_ankle: { x: 0.56, y: 0.79, z: 0.0, visibility: 0.96 },
+    left_heel: { x: 0.42, y: 0.82 - heelLift, z: 0.0, visibility: 0.93 },
+    right_heel: { x: 0.58, y: 0.82, z: 0.0, visibility: 0.94 },
+    left_foot_index: { x: 0.47, y: 0.83, z: 0.0, visibility: 0.95 },
+    right_foot_index: { x: 0.53, y: 0.83, z: 0.0, visibility: 0.95 },
   };
 
   if (isMirrored) {
@@ -77,7 +77,20 @@ export default function PoseTestScreen({ navigation }) {
   const [isMirrored, setIsMirrored] = useState(true);
   const [modelVariant, setModelVariant] = useState('lite');
   const [isActive, setIsActive] = useState(true);
-  const [currentLandmarks, setCurrentLandmarks] = useState(null);
+  const [currentLandmarks, setCurrentLandmarks] = useState(() =>
+    generateSimulatedAnklePose(Date.now(), true)
+  );
+  const [viewportLayout, setViewportLayout] = useState({
+    width: Platform.OS === 'web' ? 390 : SCREEN_WIDTH,
+    height: Math.round(SCREEN_HEIGHT * 0.48),
+  });
+
+  const handleViewportLayout = useCallback((e) => {
+    const { width, height } = e.nativeEvent.layout;
+    if (width > 0 && height > 0) {
+      setViewportLayout({ width: Math.round(width), height: Math.round(height) });
+    }
+  }, []);
 
   const { hasPermission, requestPermission, isAvailable: isNativePermAvailable } = useVisionCameraPermission();
 
@@ -192,7 +205,7 @@ export default function PoseTestScreen({ navigation }) {
       </View>
 
       {/* Camera Viewport Area */}
-      <View style={styles.viewportContainer}>
+      <View style={styles.viewportContainer} onLayout={handleViewportLayout}>
         {isNativeProviderAvailable ? (
           hasPermission ? (
             <VisionCameraView
@@ -205,8 +218,8 @@ export default function PoseTestScreen({ navigation }) {
               {currentLandmarks && (
                 <SkeletonOverlay
                   landmarks={currentLandmarks}
-                  width={SCREEN_WIDTH}
-                  height={SCREEN_HEIGHT * 0.48}
+                  width={viewportLayout.width}
+                  height={viewportLayout.height}
                   color={activeMetrics.status === 'tracking' ? '#4CAF50' : '#FF9800'}
                   isMirrored={false}
                 />
@@ -231,8 +244,8 @@ export default function PoseTestScreen({ navigation }) {
             {currentLandmarks && (
               <SkeletonOverlay
                 landmarks={currentLandmarks}
-                width={SCREEN_WIDTH}
-                height={SCREEN_HEIGHT * 0.48}
+                width={viewportLayout.width}
+                height={viewportLayout.height}
                 color="#4CAF50"
                 isMirrored={false}
               />
