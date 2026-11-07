@@ -1,0 +1,11 @@
+..................................                                       [100%]
+============================== warnings summary ===============================
+tests/integration/test_auth.py: 10 warnings
+tests/integration/test_clinician_patients.py: 7 warnings
+tests/integration/test_plans_exercises_progress.py: 11 warnings
+tests/integration/test_sessions.py: 18 warnings
+  C:\Users\Darshan AR\AppData\Roaming\Python\Python313\site-packages\jose\jwt.py:311: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = timegm(datetime.utcnow().utctimetuple())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+34 passed, 46 warnings in 8.73s
