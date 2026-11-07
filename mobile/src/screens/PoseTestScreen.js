@@ -8,7 +8,7 @@
  * - Does NOT modify LiveMonitorScreen.js or any protected clinical modules.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {
   ArrowLeft,
@@ -39,6 +40,37 @@ import {
 } from '../engines/providers/visionCameraProvider';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+function generateSimulatedAnklePose(timestamp, isMirrored = false) {
+  const cycle = (timestamp % 2400) / 2400;
+  const sinVal = Math.sin(cycle * Math.PI * 2);
+  const heelLift = Math.max(0, sinVal) * 0.08;
+  const ankleFlex = sinVal * 0.03;
+
+  const raw = {
+    nose: { x: 0.50, y: 0.12, z: 0.0, visibility: 0.99 },
+    left_shoulder: { x: 0.43, y: 0.24, z: 0.0, visibility: 0.98 },
+    right_shoulder: { x: 0.57, y: 0.24, z: 0.0, visibility: 0.98 },
+    left_hip: { x: 0.45, y: 0.44, z: 0.0, visibility: 0.96 },
+    right_hip: { x: 0.55, y: 0.44, z: 0.0, visibility: 0.96 },
+    left_knee: { x: 0.44, y: 0.64, z: 0.0, visibility: 0.94 },
+    right_knee: { x: 0.56, y: 0.64, z: 0.0, visibility: 0.95 },
+    left_ankle: { x: 0.44, y: 0.82 - ankleFlex * 0.4, z: 0.0, visibility: 0.95 },
+    right_ankle: { x: 0.56, y: 0.82, z: 0.0, visibility: 0.96 },
+    left_heel: { x: 0.42, y: 0.86 - heelLift, z: 0.0, visibility: 0.93 },
+    right_heel: { x: 0.58, y: 0.86, z: 0.0, visibility: 0.94 },
+    left_foot_index: { x: 0.47, y: 0.87, z: 0.0, visibility: 0.95 },
+    right_foot_index: { x: 0.53, y: 0.87, z: 0.0, visibility: 0.95 },
+  };
+
+  if (isMirrored) {
+    for (const k of Object.keys(raw)) {
+      raw[k].x = 1.0 - raw[k].x;
+    }
+  }
+
+  return raw;
+}
 
 export default function PoseTestScreen({ navigation }) {
   const [cameraPosition, setCameraPosition] = useState('front');
@@ -71,6 +103,40 @@ export default function PoseTestScreen({ navigation }) {
     modelVariant,
     enabled: isActive,
   });
+
+  // Simulated telemetry loop when native camera is not available (Web / Expo Go preview)
+  const [simulatedMetrics, setSimulatedMetrics] = useState({
+    fps: 0,
+    inferenceMs: 0,
+    totalLatencyMs: 0,
+    presenceScore: 0,
+    status: 'idle',
+  });
+
+  useEffect(() => {
+    if (isNativeProviderAvailable) return;
+    if (!isActive) {
+      setSimulatedMetrics((prev) => ({ ...prev, status: 'paused', fps: 0 }));
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const mockLandmarks = generateSimulatedAnklePose(now, isMirrored);
+      setCurrentLandmarks(mockLandmarks);
+      setSimulatedMetrics({
+        fps: 30,
+        inferenceMs: 14,
+        totalLatencyMs: 18,
+        presenceScore: 0.98,
+        status: 'tracking',
+      });
+    }, 33);
+
+    return () => clearInterval(interval);
+  }, [isNativeProviderAvailable, isActive, isMirrored]);
+
+  const activeMetrics = isNativeProviderAvailable ? metrics : simulatedMetrics;
 
   const toggleCamera = () => {
     setCameraPosition((prev) => (prev === 'front' ? 'back' : 'front'));
@@ -111,50 +177,74 @@ export default function PoseTestScreen({ navigation }) {
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <ArrowLeft size={20} color={COLORS.charcoal} />
         </TouchableOpacity>
-        <View>
-          <Text style={styles.headerTitle}>BlazePose ML Harness</Text>
-          <Text style={styles.headerSubtitle}>
-            {isNativeProviderAvailable ? 'Native VisionCamera V5' : 'Fallback / Jest Mode'}
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle} numberOfLines={1}>BlazePose ML Harness</Text>
+          <Text style={styles.headerSubtitle} numberOfLines={1}>
+            {isNativeProviderAvailable ? 'Native VisionCamera V5' : 'Simulation Mode (Web / Expo Go)'}
           </Text>
         </View>
-        <TouchableOpacity
-          style={[styles.statusBadge, metrics.status === 'tracking' ? styles.statusTracking : styles.statusLost]}
+        <View
+          style={[styles.statusBadge, activeMetrics.status === 'tracking' ? styles.statusTracking : styles.statusLost]}
         >
           <Activity size={12} color="#FFFFFF" />
-          <Text style={styles.statusText}>{metrics.status.toUpperCase()}</Text>
-        </TouchableOpacity>
+          <Text style={styles.statusText}>{activeMetrics.status.toUpperCase()}</Text>
+        </View>
       </View>
 
       {/* Camera Viewport Area */}
       <View style={styles.viewportContainer}>
-        {hasPermission ? (
-          <VisionCameraView
-            device={device}
-            frameOutput={frameOutput}
-            isActive={isActive}
-            style={StyleSheet.absoluteFill}
-          >
-            {/* Live Skeleton Overlay */}
+        {isNativeProviderAvailable ? (
+          hasPermission ? (
+            <VisionCameraView
+              device={device}
+              frameOutput={frameOutput}
+              isActive={isActive}
+              style={StyleSheet.absoluteFill}
+            >
+              {/* Live Skeleton Overlay */}
+              {currentLandmarks && (
+                <SkeletonOverlay
+                  landmarks={currentLandmarks}
+                  width={SCREEN_WIDTH}
+                  height={SCREEN_HEIGHT * 0.48}
+                  color={activeMetrics.status === 'tracking' ? '#4CAF50' : '#FF9800'}
+                  isMirrored={false}
+                />
+              )}
+            </VisionCameraView>
+          ) : (
+            <View style={styles.permissionPrompt}>
+              <ShieldCheck size={48} color={COLORS.orange} />
+              <Text style={styles.permissionTitle}>Camera Permission Required</Text>
+              <Text style={styles.permissionMessage}>
+                BlazePose real-time on-device landmark inference requires active camera permissions.
+              </Text>
+              <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+                <Text style={styles.permissionButtonText}>Grant Camera Permission</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        ) : (
+          <View style={styles.simulationContainer}>
+            {/* Clinical grid background */}
+            <View style={styles.gridOverlay} />
             {currentLandmarks && (
               <SkeletonOverlay
                 landmarks={currentLandmarks}
                 width={SCREEN_WIDTH}
-                height={SCREEN_HEIGHT * 0.58}
-                color={metrics.status === 'tracking' ? '#4CAF50' : '#FF9800'}
-                isMirrored={false} // Already transformed by blazeposeAdapter if isMirrored
+                height={SCREEN_HEIGHT * 0.48}
+                color="#4CAF50"
+                isMirrored={false}
               />
             )}
-          </VisionCameraView>
-        ) : (
-          <View style={styles.permissionPrompt}>
-            <ShieldCheck size={48} color={COLORS.orange} />
-            <Text style={styles.permissionTitle}>Camera Permission Required</Text>
-            <Text style={styles.permissionMessage}>
-              BlazePose real-time on-device landmark inference requires active camera permissions.
-            </Text>
-            <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-              <Text style={styles.permissionButtonText}>Grant Camera Permission</Text>
-            </TouchableOpacity>
+            <View style={styles.simulationBanner}>
+              <Text style={styles.simulationBannerText}>
+                SIMULATED ANKLE TELEMETRY PREVIEW
+              </Text>
+              <Text style={styles.simulationBannerSub}>
+                Real camera + TFLite inference runs in Android Dev Build (npx expo run:android)
+              </Text>
+            </View>
           </View>
         )}
 
@@ -162,22 +252,22 @@ export default function PoseTestScreen({ navigation }) {
         <View style={styles.floatingHud}>
           <View style={styles.hudStat}>
             <Text style={styles.hudStatLabel}>FPS</Text>
-            <Text style={styles.hudStatValue}>{metrics.fps}</Text>
+            <Text style={styles.hudStatValue}>{activeMetrics.fps}</Text>
           </View>
           <View style={styles.hudDivider} />
           <View style={styles.hudStat}>
             <Text style={styles.hudStatLabel}>INFERENCE</Text>
-            <Text style={styles.hudStatValue}>{metrics.inferenceMs} ms</Text>
+            <Text style={styles.hudStatValue}>{activeMetrics.inferenceMs} ms</Text>
           </View>
           <View style={styles.hudDivider} />
           <View style={styles.hudStat}>
             <Text style={styles.hudStatLabel}>LATENCY</Text>
-            <Text style={styles.hudStatValue}>{metrics.totalLatencyMs} ms</Text>
+            <Text style={styles.hudStatValue}>{activeMetrics.totalLatencyMs} ms</Text>
           </View>
           <View style={styles.hudDivider} />
           <View style={styles.hudStat}>
             <Text style={styles.hudStatLabel}>PRESENCE</Text>
-            <Text style={styles.hudStatValue}>{Math.round(metrics.presenceScore * 100)}%</Text>
+            <Text style={styles.hudStatValue}>{Math.round(activeMetrics.presenceScore * 100)}%</Text>
           </View>
         </View>
       </View>
@@ -281,10 +371,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: Platform.OS === 'android' ? 36 : 14,
+    paddingBottom: 12,
     backgroundColor: '#16231A',
     borderBottomWidth: 1,
     borderBottomColor: '#24382A',
+  },
+  headerCenter: {
+    flex: 1,
+    marginHorizontal: 10,
   },
   backButton: {
     width: 36,
@@ -323,14 +418,54 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   viewportContainer: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.52,
-    backgroundColor: '#000000',
+    width: '100%',
+    height: SCREEN_HEIGHT * 0.48,
+    backgroundColor: '#071009',
     position: 'relative',
     overflow: 'hidden',
   },
+  simulationContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#071009',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gridOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.15,
+    borderWidth: 1,
+    borderColor: '#34D399',
+  },
+  simulationBanner: {
+    position: 'absolute',
+    bottom: 8,
+    left: 12,
+    right: 12,
+    backgroundColor: 'rgba(15, 23, 42, 0.88)',
+    borderRadius: RADIUS.sm,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(56, 189, 248, 0.3)',
+  },
+  simulationBannerText: {
+    color: '#38BDF8',
+    fontSize: 10,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  simulationBannerSub: {
+    color: '#94A3B8',
+    fontSize: 9,
+    marginTop: 2,
+    textAlign: 'center',
+  },
   permissionPrompt: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
