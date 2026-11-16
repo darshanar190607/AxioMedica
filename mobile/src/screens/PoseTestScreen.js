@@ -41,6 +41,63 @@ import {
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
+function WebCameraStream({ isMirrored = true }) {
+  if (Platform.OS !== 'web') return null;
+
+  const videoRef = React.useRef(null);
+  const [streamReady, setStreamReady] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      return;
+    }
+
+    let localStream = null;
+    navigator.mediaDevices
+      .getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+        audio: false,
+      })
+      .then((s) => {
+        localStream = s;
+        if (videoRef.current) {
+          videoRef.current.srcObject = s;
+          videoRef.current.play().catch(() => {});
+          setStreamReady(true);
+        }
+      })
+      .catch(() => {
+        // Fallback to simulated grid if user denies or lacks webcam
+      });
+
+    return () => {
+      if (localStream) {
+        localStream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      muted
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        transform: isMirrored ? 'scaleX(-1)' : 'none',
+        zIndex: 0,
+        opacity: streamReady ? 0.9 : 0,
+      }}
+    />
+  );
+}
+
 function generateSimulatedAnklePose(timestamp, isMirrored = false) {
   const cycle = (timestamp % 2400) / 2400;
   const sinVal = Math.sin(cycle * Math.PI * 2);
@@ -239,6 +296,8 @@ export default function PoseTestScreen({ navigation }) {
           )
         ) : (
           <View style={styles.simulationContainer}>
+            {/* Live Web Camera feed if on browser */}
+            <WebCameraStream isMirrored={isMirrored} />
             {/* Clinical grid background */}
             <View style={styles.gridOverlay} />
             {currentLandmarks && (
