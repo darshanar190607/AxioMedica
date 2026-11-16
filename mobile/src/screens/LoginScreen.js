@@ -4,10 +4,14 @@ import {
   TouchableOpacity, ScrollView, StatusBar,
   KeyboardAvoidingView, Platform, ActivityIndicator,
 } from 'react-native';
+import {
+  Activity, Stethoscope, UserCheck, Mail, Lock,
+  Eye, EyeOff, ShieldCheck, ArrowRight,
+} from 'lucide-react-native';
 import { COLORS, RADIUS, SHADOW, SHADOW_MD } from '../data/theme';
 import { PrimaryButton } from '../components/UI';
 import { useAuth } from '../context/AuthContext';
-import { isMockEnabled } from '../config/env';
+import { isMockEnabled, setMockEnabled } from '../config/env';
 
 export default function LoginScreen({ navigation }) {
   const { login, isLoading, error, clearError } = useAuth();
@@ -16,19 +20,61 @@ export default function LoginScreen({ navigation }) {
   const [showPass, setShowPass] = useState(false);
   const [localError, setLocalError] = useState('');
 
+  const navigateByRole = (role) => {
+    if (role === 'clinician') {
+      navigation.replace('Clinician');
+    } else {
+      navigation.replace('Main');
+    }
+  };
+
   const handleLogin = async () => {
     clearError();
     setLocalError('');
 
-    // Pre-fill default demo credentials if user leaves blank
     const targetEmail = (email || 'sarah.johnson@email.com').trim();
     const targetPassword = password || 'PatientPass123!';
 
     try {
-      await login(targetEmail, targetPassword);
-      navigation.replace('Main');
+      const res = await login(targetEmail, targetPassword);
+      navigateByRole(res?.role);
     } catch (err) {
-      setLocalError(err.message || 'Invalid email or password.');
+      const msg = err.message || '';
+      if (msg.includes('fetch') || msg.includes('Network') || msg.includes('NETWORK_ERROR') || msg.includes('Failed to fetch')) {
+        setLocalError('Backend server is offline (http://localhost:8000). Click below to explore in Demo Mode!');
+      } else {
+        setLocalError(msg || 'Invalid email or password.');
+      }
+    }
+  };
+
+  const handleQuickPatient = async () => {
+    clearError();
+    setLocalError('');
+    setEmail('sarah.johnson@email.com');
+    setPassword('PatientPass123!');
+    try {
+      const res = await login('sarah.johnson@email.com', 'PatientPass123!');
+      navigateByRole(res?.role || 'patient');
+    } catch (err) {
+      setMockEnabled(true);
+      await login('sarah.johnson@email.com', 'PatientPass123!');
+      navigation.replace('Main');
+    }
+  };
+
+  const handleQuickClinician = async () => {
+    clearError();
+    setLocalError('');
+    setEmail('doctor.torres@hospital.com');
+    setPassword('ClinicianPass123!');
+    try {
+      const res = await login('doctor.torres@hospital.com', 'ClinicianPass123!');
+      navigateByRole(res?.role || 'clinician');
+    } catch (err) {
+      setMockEnabled(true);
+      await login('doctor.torres@hospital.com', 'ClinicianPass123!');
+      navigation.replace('Clinician');
     }
   };
 
@@ -45,16 +91,58 @@ export default function LoginScreen({ navigation }) {
         {/* Brand */}
         <View style={s.brandArea}>
           <View style={s.logoMark}>
-            <Text style={s.logoMarkText}>R</Text>
+            <Activity size={28} color={COLORS.charcoal} />
           </View>
-          <Text style={s.brandName}>RehabStep AI</Text>
-          <Text style={s.brandSub}>Ankle Rehabilitation Platform</Text>
+          <Text style={s.brandName}>AxioMedica</Text>
+          <Text style={s.brandSub}>Clinical Ankle Biomechanics & Recovery</Text>
         </View>
 
-        {/* Login card */}
+        {/* 2 Roles Quick-Select Box */}
+        <View style={s.roleCard}>
+          <Text style={s.roleCardTitle}>Select Portal to Enter</Text>
+          <Text style={s.roleCardSub}>Sign in directly to either platform workspace:</Text>
+
+          <View style={s.roleBtnRow}>
+            {/* Patient Button */}
+            <TouchableOpacity
+              style={[s.roleBtn, s.patientRoleBtn]}
+              onPress={handleQuickPatient}
+              activeOpacity={0.85}
+              disabled={isLoading}
+            >
+              <View style={s.roleBtnIconWrap}>
+                <UserCheck size={20} color="#065F46" />
+              </View>
+              <View style={s.roleBtnTextWrap}>
+                <Text style={s.roleBtnTitle}>Patient Portal</Text>
+                <Text style={s.roleBtnSub}>Sarah Johnson · Stage 2</Text>
+              </View>
+              <Text style={s.roleBadge}>Patient</Text>
+            </TouchableOpacity>
+
+            {/* Clinician Button */}
+            <TouchableOpacity
+              style={[s.roleBtn, s.clinicianRoleBtn]}
+              onPress={handleQuickClinician}
+              activeOpacity={0.85}
+              disabled={isLoading}
+            >
+              <View style={[s.roleBtnIconWrap, { backgroundColor: '#E0E7FF' }]}>
+                <Stethoscope size={20} color="#3730A3" />
+              </View>
+              <View style={s.roleBtnTextWrap}>
+                <Text style={s.roleBtnTitle}>Clinician Portal</Text>
+                <Text style={s.roleBtnSub}>Dr. Michael Torres · PT</Text>
+              </View>
+              <Text style={[s.roleBadge, s.clinicianBadge]}>Doctor</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Manual Credentials Card */}
         <View style={s.card}>
-          <Text style={s.welcome}>Welcome Back 👋</Text>
-          <Text style={s.sub}>Continue your recovery journey.</Text>
+          <Text style={s.welcome}>Account Credentials</Text>
+          <Text style={s.sub}>Enter your medical credentials below</Text>
 
           {displayError ? (
             <View style={s.errorBox}>
@@ -64,7 +152,7 @@ export default function LoginScreen({ navigation }) {
 
           <Text style={s.label}>Email Address</Text>
           <View style={s.inputWrap}>
-            <Text style={s.inputIcon}>✉</Text>
+            <Mail size={16} color={COLORS.mutedSage} style={s.inputIcon} />
             <TextInput
               style={s.input}
               placeholder="sarah.johnson@email.com"
@@ -78,7 +166,7 @@ export default function LoginScreen({ navigation }) {
 
           <Text style={s.label}>Password</Text>
           <View style={s.inputWrap}>
-            <Text style={s.inputIcon}>🔒</Text>
+            <Lock size={16} color={COLORS.mutedSage} style={s.inputIcon} />
             <TextInput
               style={[s.input, { flex: 1 }]}
               placeholder="••••••••"
@@ -88,34 +176,31 @@ export default function LoginScreen({ navigation }) {
               secureTextEntry={!showPass}
             />
             <TouchableOpacity onPress={() => setShowPass(v => !v)} style={s.eyeBtn}>
-              <Text style={s.eyeIcon}>{showPass ? '🙈' : '👁'}</Text>
+              {showPass ? (
+                <EyeOff size={16} color={COLORS.mutedSage} />
+              ) : (
+                <Eye size={16} color={COLORS.mutedSage} />
+              )}
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={s.forgotRow}>
-            <Text style={s.forgot}>Forgot Password?</Text>
-          </TouchableOpacity>
+          <View style={s.fillRow}>
+            <TouchableOpacity onPress={() => { setEmail('sarah.johnson@email.com'); setPassword('PatientPass123!'); }}>
+              <Text style={s.fillTag}>Fill Patient</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { setEmail('doctor.torres@hospital.com'); setPassword('ClinicianPass123!'); }}>
+              <Text style={s.fillTag}>Fill Clinician</Text>
+            </TouchableOpacity>
+          </View>
 
           <PrimaryButton
-            title={isLoading ? 'Logging in...' : 'Login'}
+            title={isLoading ? 'Signing In...' : 'Sign In'}
             onPress={handleLogin}
             disabled={isLoading}
           />
-
-          <View style={s.divRow}>
-            <View style={s.divLine} />
-            <Text style={s.divText}>or</Text>
-            <View style={s.divLine} />
-          </View>
-
-          <View style={s.signupRow}>
-            <Text style={s.signupText}>Don't have an account? </Text>
-            <TouchableOpacity>
-              <Text style={s.signupLink}>Contact your provider</Text>
-            </TouchableOpacity>
-          </View>
         </View>
 
+        <View style={{ height: 28 }} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -123,35 +208,111 @@ export default function LoginScreen({ navigation }) {
 
 const s = StyleSheet.create({
   root:   { flex: 1, backgroundColor: COLORS.sage },
-  scroll: { flexGrow: 1, paddingHorizontal: 22, paddingTop: 52, paddingBottom: 32 },
+  scroll: { flexGrow: 1, paddingHorizontal: 20, paddingTop: 44, paddingBottom: 32 },
 
-  brandArea: { alignItems: 'center', marginBottom: 28 },
+  brandArea: { alignItems: 'center', marginBottom: 20 },
   logoMark: {
-    width: 58, height: 58, borderRadius: 18,
+    width: 52, height: 52, borderRadius: 16,
     backgroundColor: COLORS.yellow,
-    alignItems: 'center', justifyContent: 'center', marginBottom: 10,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 8,
     ...SHADOW_MD,
   },
-  logoMarkText: { fontSize: 26, fontWeight: '900', color: COLORS.charcoal },
   brandName: { fontSize: 22, fontWeight: '800', color: COLORS.charcoal },
-  brandSub:  { fontSize: 13, color: COLORS.charcoal, opacity: 0.65, marginTop: 3 },
+  brandSub:  { fontSize: 13, color: COLORS.charcoal, opacity: 0.7, marginTop: 2 },
 
+  /* 2 Roles Card */
+  roleCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.xl,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    ...SHADOW_MD,
+  },
+  roleCardTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: COLORS.charcoal,
+    marginBottom: 2,
+  },
+  roleCardSub: {
+    fontSize: 12,
+    color: COLORS.mutedSage,
+    marginBottom: 12,
+  },
+  roleBtnRow: {
+    gap: 10,
+  },
+  roleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: RADIUS.lg,
+    borderWidth: 1.5,
+  },
+  patientRoleBtn: {
+    backgroundColor: '#ECFDF5',
+    borderColor: '#A7F3D0',
+  },
+  clinicianRoleBtn: {
+    backgroundColor: '#EEF2FF',
+    borderColor: '#C7D2FE',
+  },
+  roleBtnIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: '#D1FAE5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  roleBtnTextWrap: {
+    flex: 1,
+  },
+  roleBtnTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: COLORS.charcoal,
+  },
+  roleBtnSub: {
+    fontSize: 12,
+    color: COLORS.mutedSage,
+    marginTop: 1,
+  },
+  roleBadge: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#065F46',
+    backgroundColor: '#D1FAE5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  clinicianBadge: {
+    color: '#3730A3',
+    backgroundColor: '#E0E7FF',
+  },
+
+  /* Manual card */
   card: {
     backgroundColor: COLORS.offWhite,
     borderRadius: RADIUS.xl,
-    padding: 24,
+    padding: 20,
     borderWidth: 1,
     borderColor: COLORS.lightGray,
     ...SHADOW_MD,
   },
-  welcome: { fontSize: 22, fontWeight: '800', color: COLORS.charcoal, marginBottom: 4 },
-  sub:     { fontSize: 13, color: COLORS.mutedSage, marginBottom: 22 },
+  welcome: { fontSize: 18, fontWeight: '800', color: COLORS.charcoal, marginBottom: 2 },
+  sub:     { fontSize: 13, color: COLORS.mutedSage, marginBottom: 16 },
 
   errorBox: {
     backgroundColor: '#FDECEA',
     borderRadius: RADIUS.sm,
     padding: 10,
-    marginBottom: 16,
+    marginBottom: 14,
     borderWidth: 1,
     borderColor: '#F5C6CB',
   },
@@ -162,26 +323,28 @@ const s = StyleSheet.create({
     textAlign: 'center',
   },
 
-  label: { fontSize: 13, fontWeight: '600', color: COLORS.charcoal, marginBottom: 7 },
+  label: { fontSize: 13, fontWeight: '600', color: COLORS.charcoal, marginBottom: 6 },
   inputWrap: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: COLORS.white, borderRadius: RADIUS.md,
     borderWidth: 1.5, borderColor: COLORS.lightGray,
-    paddingHorizontal: 14, marginBottom: 16, height: 50,
+    paddingHorizontal: 12, marginBottom: 12, height: 48,
   },
-  inputIcon: { fontSize: 15, marginRight: 10, color: COLORS.mutedSage },
+  inputIcon: { marginRight: 10 },
   input:     { flex: 1, fontSize: 14, color: COLORS.charcoal },
-  eyeBtn:    { padding: 4 },
-  eyeIcon:   { fontSize: 16 },
+  eyeBtn:    { padding: 6 },
 
-  forgotRow: { alignItems: 'flex-end', marginBottom: 20, marginTop: -4 },
-  forgot:    { fontSize: 13, color: COLORS.orange, fontWeight: '600' },
-
-  divRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 18 },
-  divLine:{ flex: 1, height: 1, backgroundColor: COLORS.lightGray },
-  divText:{ fontSize: 12, color: COLORS.mutedSage, marginHorizontal: 12 },
-
-  signupRow:  { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' },
-  signupText: { fontSize: 13, color: COLORS.mutedSage },
-  signupLink: { fontSize: 13, color: COLORS.orange, fontWeight: '700' },
+  fillRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginBottom: 16,
+    marginTop: -4,
+  },
+  fillTag: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.orange,
+    textDecorationLine: 'underline',
+  },
 });

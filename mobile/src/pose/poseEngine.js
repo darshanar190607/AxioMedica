@@ -1,6 +1,7 @@
-﻿/**
+/**
  * mobile/src/pose/poseEngine.js
- * Wraps react-native-vision-camera + TFLite BlazePose inference.
- * Stub — real implementation comes in the pose-tracking task.
+ * Central export for PoseEngine singleton and class.
+ * Conforms to strict layering and integrates with blazeposeAdapter.
  */
-export const poseEngine = {};
+export * from '../engines/poseEngine';
+export { default } from '../engines/poseEngine';

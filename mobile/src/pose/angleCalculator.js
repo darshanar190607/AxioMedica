@@ -1,9 +1,12 @@
-﻿/**
+/**
  * mobile/src/pose/angleCalculator.js
- * Computes joint angles from MediaPipe landmark arrays.
- * Stub — full trigonometry implementation in pose-tracking task.
+ * Computes joint angles from landmark arrays.
+ * Implemented using pure mathematical dot product from geometry.js.
  */
+import { angle } from './geometry';
+
 export function computeAngle(a, b, c) {
-  // Returns angle at joint B given three {x,y} landmark points
-  return 0;
+  return angle(a, b, c);
 }
+
+export default computeAngle;

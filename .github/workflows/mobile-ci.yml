@@ -1,17 +1,17 @@
-﻿name: Mobile CI — Jest (pose)
+name: Mobile CI — Jest (pose)
 
 on:
   pull_request:
     branches: [main, dev]
     paths:
-      - "mobile/src/pose/**"
-      - "mobile/src/**/__tests__/**"
+      - "mobile/src/**"
+      - "mobile/__tests__/**"
       - "mobile/package.json"
       - ".github/workflows/mobile-ci.yml"
 
 jobs:
   test:
-    name: Run Jest (src/pose)
+    name: Run Jest
     runs-on: ubuntu-latest
 
     defaults:
@@ -32,5 +32,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Jest (pose module only)
-        run: npx jest src/pose --passWithNoTests --ci --coverage
+      - name: Run Jest test suites
+        run: npx jest --passWithNoTests --ci --coverage

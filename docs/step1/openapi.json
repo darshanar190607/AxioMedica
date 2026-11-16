@@ -1,0 +1,3261 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AxioMedica Backend API",
+    "description": "FastAPI Backend for AxioMedica Tele-Rehabilitation Platform.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "System Health & Database Connectivity Check",
+        "description": "Checks the operational status of the API server and tests live connectivity to PostgreSQL.",
+        "operationId": "get_health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "System Health & Database Connectivity Check",
+        "description": "Checks the operational status of the API server and tests live connectivity to PostgreSQL.",
+        "operationId": "get_health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register a new patient account",
+        "description": "Create a new patient account.\n\n* Hashes password with Argon2id.\n* Creates a Patient profile row.\n* Inserts consent records for `camera` and `data_processing`.\n* Returns the public user object and the created consents.",
+        "operationId": "register_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login and obtain access + refresh tokens",
+        "description": "Authenticate with email and password.\n\n* Rate-limited to 10 attempts per IP per 60 s.\n* Returns a generic error regardless of whether the account exists.",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Rotate refresh token and obtain a new token pair",
+        "description": "Consume a valid refresh token and return a rotated token pair.\n\n* Old refresh token is immediately revoked.\n* If the refresh token has already been used (reuse detected), all tokens\n  for the account are invalidated (family invalidation).",
+        "operationId": "refresh_api_v1_auth_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessTokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Revoke refresh token (logout)",
+        "description": "Revoke the supplied refresh token, effectively logging the user out.\nAlways returns 200 OK regardless of whether the token was found.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Get current authenticated user identity and role",
+        "description": "Returns the authenticated user's ID, email, full name, and role (patient/clinician/admin).",
+        "operationId": "get_current_user_me_api_v1_auth_me_get",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/patients/me": {
+      "get": {
+        "tags": [
+          "Patients"
+        ],
+        "summary": "Get authenticated patient's profile",
+        "description": "Retrieve the full patient profile for the currently authenticated patient.\nRequires role: patient.",
+        "operationId": "get_patient_me_api_v1_patients_me_get",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Patients"
+        ],
+        "summary": "Update authenticated patient's profile",
+        "description": "Partially update the patient profile for the currently authenticated patient.\nAll fields are optional \u2013 only provided fields are updated.\nRequires role: patient.",
+        "operationId": "patch_patient_me_api_v1_patients_me_patch",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchPatientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientMeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/sync": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Batch upload a completed rehabilitation session",
+        "description": "Synchronizes one rehabilitation session from the mobile client to the backend:\n  - Validates against `docs/contracts/session_payload.schema.json`\n  - Validates numeric boundaries (pain 0-10, confidence 0-1, ROM 0-180)\n  - Requires active 'data_processing' patient consent\n  - Guarantees idempotency via `client_uuid`\n  - Executes inside a single DB transaction with automatic rollback\n  - Computes and upserts daily progress metrics",
+        "operationId": "sync_session_api_v1_sessions_sync_post",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Session payload adhering to docs/contracts/session_payload.schema.json",
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session created and progress metrics updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionSyncResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Session was previously synced (idempotent retry)."
+          },
+          "400": {
+            "description": "Invalid contract payload or exercise reference."
+          },
+          "403": {
+            "description": "Missing active data consent or unauthorized plan access."
+          },
+          "404": {
+            "description": "Referenced rehabilitation plan not found."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessions": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "List patient sessions with optional date filtering",
+        "description": "Returns a paginated list of sessions for the authenticated patient,\noptionally filtered by time interval [from, to].",
+        "operationId": "list_sessions_api_v1_sessions_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO-8601 start timestamp filter",
+              "title": "From"
+            },
+            "description": "ISO-8601 start timestamp filter"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO-8601 end timestamp filter",
+              "title": "To"
+            },
+            "description": "ISO-8601 end timestamp filter"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Items per page",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Items per page"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Pagination offset",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Pagination offset"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/{session_id}": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Get full session details by ID",
+        "description": "Fetches full session details including all exercises and individual rep telemetry.\nStrictly restricted to the session owner.",
+        "operationId": "get_session_api_v1_sessions__session_id__get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/exercises": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "summary": "List all exercises in catalog",
+        "operationId": "list_exercises_api_v1_exercises_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Exercises Api V1 Exercises Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/exercises/{exercise_id}": {
+      "get": {
+        "tags": [
+          "Exercises"
+        ],
+        "summary": "Get exercise by ID",
+        "operationId": "get_exercise_api_v1_exercises__exercise_id__get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans/active": {
+      "get": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Get patient's active prescribed rehabilitation plan",
+        "operationId": "get_active_plan_api_v1_plans_active_get",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivePlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clinician/plans": {
+      "post": {
+        "tags": [
+          "Clinician"
+        ],
+        "summary": "Create a new rehabilitation plan for a patient",
+        "operationId": "create_plan_api_v1_clinician_plans_post",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivePlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clinician/plans/{plan_id}/approve": {
+      "put": {
+        "tags": [
+          "Clinician"
+        ],
+        "summary": "Clinician approves and activates a rehabilitation plan",
+        "operationId": "approve_plan_api_v1_clinician_plans__plan_id__approve_put",
+        "parameters": [
+          {
+            "name": "plan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Plan Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovePlanResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clinician/patients": {
+      "get": {
+        "tags": [
+          "Clinician"
+        ],
+        "summary": "List all registered rehabilitation patients",
+        "description": "Retrieve all patients in the system with their clinical profile and contact details.\nAccessible by clinicians and admins.",
+        "operationId": "list_patients_api_v1_clinician_patients_get",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicianPatientListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clinician"
+        ],
+        "summary": "Onboard and create a new patient with credentials",
+        "description": "Register a new patient account with credentials, assign them to this clinician,\nand automatically create required consents so they can immediately log in.\nAccessible by clinicians and admins.",
+        "operationId": "create_patient_api_v1_clinician_patients_post",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClinicianCreatePatientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicianCreatePatientResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/progress/summary": {
+      "get": {
+        "tags": [
+          "Progress"
+        ],
+        "summary": "Get patient recovery and progress summary",
+        "operationId": "get_progress_summary_api_v1_progress_summary_get",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressSummaryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/progress/metrics": {
+      "get": {
+        "tags": [
+          "Progress"
+        ],
+        "summary": "Get daily time-series metrics for charting",
+        "operationId": "get_progress_metrics_api_v1_progress_metrics_get",
+        "parameters": [
+          {
+            "name": "metric",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Metric type: rom | form_score | pain | adherence",
+              "default": "rom",
+              "title": "Metric"
+            },
+            "description": "Metric type: rom | form_score | pain | adherence"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date filter (YYYY-MM-DD)",
+              "title": "From"
+            },
+            "description": "Start date filter (YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End date filter (YYYY-MM-DD)",
+              "title": "To"
+            },
+            "description": "End date filter (YYYY-MM-DD)"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsTimeSeriesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pain-logs": {
+      "post": {
+        "tags": [
+          "Pain Logs"
+        ],
+        "summary": "Record a patient pain log entry",
+        "operationId": "create_pain_log_api_v1_pain_logs_post",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePainLogRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PainLogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pain Logs"
+        ],
+        "summary": "List patient pain logs",
+        "operationId": "list_pain_logs_api_v1_pain_logs_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PainLogResponse"
+                  },
+                  "title": "Response List Pain Logs Api V1 Pain Logs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ml/status": {
+      "get": {
+        "tags": [
+          "ML Serving"
+        ],
+        "summary": "Ml Service Status",
+        "description": "Returns the status of loaded ML models and inference engine runtime.\nTODO (Person B): Implement model registry inspection and hardware accelerator checks.",
+        "operationId": "ml_service_status_api_v1_ml_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Ml Service Status Api V1 Ml Status Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ml/inference": {
+      "post": {
+        "tags": [
+          "ML Serving"
+        ],
+        "summary": "Predict Sample",
+        "description": "Placeholder endpoint for pose/exercise inference requests.\nTODO (Person B): Implement model inference logic, input validation, and score calculation.",
+        "operationId": "predict_sample_api_v1_ml_inference_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "501": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Predict Sample Api V1 Ml Inference Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tts": {
+      "post": {
+        "tags": [
+          "Text-To-Speech"
+        ],
+        "summary": "Synthesize speech from rehabilitation text",
+        "operationId": "synthesize_speech_api_v1_tts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TTSPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessTokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token"
+        ],
+        "title": "AccessTokenResponse",
+        "description": "Returned by /auth/refresh \u2013 provides a new access token (and optionally a new refresh token)."
+      },
+      "ActivePlanResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "is_approved": {
+            "type": "boolean",
+            "title": "Is Approved"
+          },
+          "prescribed_frequency_per_week": {
+            "type": "integer",
+            "title": "Prescribed Frequency Per Week"
+          },
+          "currentWeek": {
+            "type": "integer",
+            "title": "Currentweek"
+          },
+          "totalWeeks": {
+            "type": "integer",
+            "title": "Totalweeks"
+          },
+          "recoveryStage": {
+            "type": "integer",
+            "title": "Recoverystage"
+          },
+          "doctor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ClinicianDoctorInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/PrescribedExerciseResponse"
+            },
+            "type": "array",
+            "title": "Exercises"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "patient_id",
+          "title",
+          "status",
+          "is_approved",
+          "prescribed_frequency_per_week",
+          "currentWeek",
+          "totalWeeks",
+          "recoveryStage"
+        ],
+        "title": "ActivePlanResponse"
+      },
+      "ApprovePlanResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "is_approved": {
+            "type": "boolean",
+            "title": "Is Approved"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "is_approved",
+          "message"
+        ],
+        "title": "ApprovePlanResponse"
+      },
+      "ClinicianCreatePatientRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Password"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "injured_ankle": {
+            "type": "string",
+            "title": "Injured Ankle",
+            "default": "Left"
+          },
+          "injury_type": {
+            "type": "string",
+            "title": "Injury Type",
+            "default": "Ankle Sprain"
+          },
+          "total_weeks": {
+            "type": "integer",
+            "title": "Total Weeks",
+            "default": 6
+          },
+          "recovery_stage": {
+            "type": "integer",
+            "title": "Recovery Stage",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "full_name"
+        ],
+        "title": "ClinicianCreatePatientRequest"
+      },
+      "ClinicianCreatePatientResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Patient successfully created and onboarded."
+          },
+          "patient": {
+            "$ref": "#/components/schemas/ClinicianPatientItem"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient"
+        ],
+        "title": "ClinicianCreatePatientResponse"
+      },
+      "ClinicianDoctorInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "ClinicianDoctorInfo"
+      },
+      "ClinicianPatientItem": {
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "injured_ankle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Injured Ankle",
+            "default": "Left"
+          },
+          "injury_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Injury Type",
+            "default": "Ankle Sprain"
+          },
+          "recovery_stage": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recovery Stage",
+            "default": 2
+          },
+          "current_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Week",
+            "default": 3
+          },
+          "total_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Weeks",
+            "default": 6
+          },
+          "recovery_percent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recovery Percent",
+            "default": 72
+          },
+          "assigned_clinician_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned Clinician Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient_id",
+          "user_id",
+          "email"
+        ],
+        "title": "ClinicianPatientItem"
+      },
+      "ClinicianPatientListResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "patients": {
+            "items": {
+              "$ref": "#/components/schemas/ClinicianPatientItem"
+            },
+            "type": "array",
+            "title": "Patients"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "patients"
+        ],
+        "title": "ClinicianPatientListResponse"
+      },
+      "ConsentOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "consent_type": {
+            "type": "string",
+            "title": "Consent Type"
+          },
+          "granted": {
+            "type": "boolean",
+            "title": "Granted"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "consent_type",
+          "granted",
+          "created_at"
+        ],
+        "title": "ConsentOut"
+      },
+      "CreatePainLogRequest": {
+        "properties": {
+          "pain_level": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "title": "Pain Level",
+            "description": "Pain rating (0-10 NRS)"
+          },
+          "body_part": {
+            "type": "string",
+            "title": "Body Part",
+            "description": "Affected body part",
+            "default": "ankle"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes",
+            "description": "Optional patient notes"
+          },
+          "logged_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logged At",
+            "description": "Timestamp of pain record"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pain_level"
+        ],
+        "title": "CreatePainLogRequest"
+      },
+      "CreatePlanRequest": {
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "prescribed_frequency_per_week": {
+            "type": "integer",
+            "maximum": 21.0,
+            "minimum": 1.0,
+            "title": "Prescribed Frequency Per Week",
+            "default": 7
+          },
+          "total_weeks": {
+            "type": "integer",
+            "maximum": 52.0,
+            "minimum": 1.0,
+            "title": "Total Weeks",
+            "default": 6
+          },
+          "recovery_stage": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Recovery Stage",
+            "default": 1
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/PrescribedExerciseCreate"
+            },
+            "type": "array",
+            "title": "Exercises"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient_id",
+          "title"
+        ],
+        "title": "CreatePlanRequest"
+      },
+      "ExerciseResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "target_joint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Joint"
+          },
+          "side_specific": {
+            "type": "boolean",
+            "title": "Side Specific",
+            "default": true
+          },
+          "safeRange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Saferange"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration"
+          },
+          "pose_config": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pose Config"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "ExerciseResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Overall system health: 'healthy' or 'unhealthy'"
+          },
+          "app_name": {
+            "type": "string",
+            "title": "App Name"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "services": {
+            "type": "object",
+            "title": "Services"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "app_name",
+          "version",
+          "environment",
+          "timestamp"
+        ],
+        "title": "HealthResponse"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "LogoutRequest": {
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "refresh_token"
+        ],
+        "title": "LogoutRequest"
+      },
+      "MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse",
+        "description": "Generic success / informational message envelope."
+      },
+      "MetricPoint": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "metric": {
+            "type": "string",
+            "title": "Metric"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Side"
+          },
+          "exercise_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exercise Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "metric",
+          "value"
+        ],
+        "title": "MetricPoint"
+      },
+      "MetricsTimeSeriesResponse": {
+        "properties": {
+          "metric": {
+            "type": "string",
+            "title": "Metric"
+          },
+          "from_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Date"
+          },
+          "to_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Date"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/MetricPoint"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metric",
+          "data"
+        ],
+        "title": "MetricsTimeSeriesResponse"
+      },
+      "MovementQuality": {
+        "properties": {
+          "accuracy": {
+            "type": "number",
+            "title": "Accuracy"
+          },
+          "safeRange": {
+            "type": "number",
+            "title": "Saferange"
+          },
+          "correctMovements": {
+            "type": "integer",
+            "title": "Correctmovements"
+          },
+          "correctionsMade": {
+            "type": "integer",
+            "title": "Correctionsmade"
+          }
+        },
+        "type": "object",
+        "required": [
+          "accuracy",
+          "safeRange",
+          "correctMovements",
+          "correctionsMade"
+        ],
+        "title": "MovementQuality"
+      },
+      "PainLogResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "pain_level": {
+            "type": "integer",
+            "title": "Pain Level"
+          },
+          "body_part": {
+            "type": "string",
+            "title": "Body Part"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "logged_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Logged At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "patient_id",
+          "pain_level",
+          "body_part",
+          "notes",
+          "logged_at",
+          "created_at"
+        ],
+        "title": "PainLogResponse"
+      },
+      "PainTrend": {
+        "properties": {
+          "current_pain": {
+            "type": "number",
+            "title": "Current Pain"
+          },
+          "baseline_pain": {
+            "type": "number",
+            "title": "Baseline Pain"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "improving",
+              "stable",
+              "worsening"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_pain",
+          "baseline_pain",
+          "status"
+        ],
+        "title": "PainTrend"
+      },
+      "PatchPatientRequest": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "date_of_birth": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Of Birth"
+          }
+        },
+        "type": "object",
+        "title": "PatchPatientRequest",
+        "description": "PATCH /patients/me \u2013 all fields optional."
+      },
+      "PatientMeResponse": {
+        "properties": {
+          "patient": {
+            "$ref": "#/components/schemas/PatientProfile"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient"
+        ],
+        "title": "PatientMeResponse",
+        "description": "Response for GET /patients/me."
+      },
+      "PatientProfile": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "date_of_birth": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Of Birth"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "injured_ankle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Injured Ankle",
+            "default": "Left"
+          },
+          "injury_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Injury Type",
+            "default": "Ankle Sprain"
+          },
+          "recovery_stage": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recovery Stage",
+            "default": 2
+          },
+          "current_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Week",
+            "default": 1
+          },
+          "total_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Weeks",
+            "default": 6
+          },
+          "recovery_percent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recovery Percent",
+            "default": 0
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserPublic"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "created_at",
+          "updated_at",
+          "user"
+        ],
+        "title": "PatientProfile",
+        "description": "Full patient profile returned by GET /patients/me."
+      },
+      "PrescribedExerciseCreate": {
+        "properties": {
+          "exercise_id": {
+            "type": "integer",
+            "title": "Exercise Id"
+          },
+          "sets": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Sets",
+            "default": 3
+          },
+          "reps": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Reps",
+            "default": 10
+          },
+          "frequency": {
+            "type": "string",
+            "title": "Frequency",
+            "default": "Twice a day"
+          },
+          "duration": {
+            "type": "string",
+            "title": "Duration",
+            "default": "5 min"
+          },
+          "safe_range": {
+            "type": "string",
+            "title": "Safe Range",
+            "default": "0\u00b0 \u2013 30\u00b0"
+          },
+          "color": {
+            "type": "string",
+            "title": "Color",
+            "default": "#F5A623"
+          },
+          "order_index": {
+            "type": "integer",
+            "title": "Order Index",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "exercise_id"
+        ],
+        "title": "PrescribedExerciseCreate"
+      },
+      "PrescribedExerciseResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "exercise_id": {
+            "type": "integer",
+            "title": "Exercise Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sets": {
+            "type": "integer",
+            "title": "Sets"
+          },
+          "reps": {
+            "type": "integer",
+            "title": "Reps"
+          },
+          "frequency": {
+            "type": "string",
+            "title": "Frequency"
+          },
+          "duration": {
+            "type": "string",
+            "title": "Duration"
+          },
+          "safeRange": {
+            "type": "string",
+            "title": "Saferange"
+          },
+          "color": {
+            "type": "string",
+            "title": "Color"
+          },
+          "progress": {
+            "type": "integer",
+            "title": "Progress",
+            "default": 0
+          },
+          "completedSessions": {
+            "type": "integer",
+            "title": "Completedsessions",
+            "default": 0
+          },
+          "totalSessions": {
+            "type": "integer",
+            "title": "Totalsessions",
+            "default": 8
+          },
+          "completedReps": {
+            "type": "integer",
+            "title": "Completedreps",
+            "default": 0
+          },
+          "totalReps": {
+            "type": "integer",
+            "title": "Totalreps",
+            "default": 80
+          },
+          "pose_config": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pose Config"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "exercise_id",
+          "name",
+          "code",
+          "sets",
+          "reps",
+          "frequency",
+          "duration",
+          "safeRange",
+          "color"
+        ],
+        "title": "PrescribedExerciseResponse"
+      },
+      "ProgressMetricResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "exercise_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exercise Id"
+          },
+          "side": {
+            "type": "string",
+            "title": "Side"
+          },
+          "max_rom_deg": {
+            "type": "number",
+            "title": "Max Rom Deg"
+          },
+          "avg_rom_deg": {
+            "type": "number",
+            "title": "Avg Rom Deg"
+          },
+          "avg_form_score": {
+            "type": "number",
+            "title": "Avg Form Score"
+          },
+          "avg_pain": {
+            "type": "number",
+            "title": "Avg Pain"
+          },
+          "adherence_pct": {
+            "type": "number",
+            "title": "Adherence Pct"
+          },
+          "total_sessions": {
+            "type": "integer",
+            "title": "Total Sessions"
+          },
+          "total_reps": {
+            "type": "integer",
+            "title": "Total Reps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "patient_id",
+          "date",
+          "exercise_id",
+          "side",
+          "max_rom_deg",
+          "avg_rom_deg",
+          "avg_form_score",
+          "avg_pain",
+          "adherence_pct",
+          "total_sessions",
+          "total_reps"
+        ],
+        "title": "ProgressMetricResponse"
+      },
+      "ProgressSummaryResponse": {
+        "properties": {
+          "current_vs_baseline_rom": {
+            "$ref": "#/components/schemas/ROMComparison"
+          },
+          "streak": {
+            "type": "integer",
+            "title": "Streak"
+          },
+          "weekly_adherence": {
+            "type": "number",
+            "title": "Weekly Adherence"
+          },
+          "pain_trend": {
+            "$ref": "#/components/schemas/PainTrend"
+          },
+          "recoveryPercent": {
+            "type": "integer",
+            "title": "Recoverypercent"
+          },
+          "recoveryStage": {
+            "type": "integer",
+            "title": "Recoverystage"
+          },
+          "currentWeek": {
+            "type": "integer",
+            "title": "Currentweek"
+          },
+          "totalWeeks": {
+            "type": "integer",
+            "title": "Totalweeks"
+          },
+          "sessionHistory": {
+            "items": {
+              "$ref": "#/components/schemas/SessionHistoryItem"
+            },
+            "type": "array",
+            "title": "Sessionhistory"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/QuickStats"
+          },
+          "movementQuality": {
+            "$ref": "#/components/schemas/MovementQuality"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_vs_baseline_rom",
+          "streak",
+          "weekly_adherence",
+          "pain_trend",
+          "recoveryPercent",
+          "recoveryStage",
+          "currentWeek",
+          "totalWeeks",
+          "stats",
+          "movementQuality"
+        ],
+        "title": "ProgressSummaryResponse"
+      },
+      "QuickStats": {
+        "properties": {
+          "completedSessions": {
+            "type": "integer",
+            "title": "Completedsessions"
+          },
+          "totalReps": {
+            "type": "integer",
+            "title": "Totalreps"
+          },
+          "accuracy": {
+            "type": "number",
+            "title": "Accuracy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "completedSessions",
+          "totalReps",
+          "accuracy"
+        ],
+        "title": "QuickStats"
+      },
+      "ROMComparison": {
+        "properties": {
+          "current_rom": {
+            "type": "number",
+            "title": "Current Rom"
+          },
+          "baseline_rom": {
+            "type": "number",
+            "title": "Baseline Rom"
+          },
+          "improvement_deg": {
+            "type": "number",
+            "title": "Improvement Deg"
+          },
+          "improvement_pct": {
+            "type": "number",
+            "title": "Improvement Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_rom",
+          "baseline_rom",
+          "improvement_deg",
+          "improvement_pct"
+        ],
+        "title": "ROMComparison"
+      },
+      "RefreshRequest": {
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "refresh_token"
+        ],
+        "title": "RefreshRequest"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Password"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "RegisterRequest"
+      },
+      "RegisterResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserPublic"
+          },
+          "consents": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentOut"
+            },
+            "type": "array",
+            "title": "Consents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user",
+          "consents"
+        ],
+        "title": "RegisterResponse"
+      },
+      "RepResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "set_no": {
+            "type": "integer",
+            "title": "Set No"
+          },
+          "rep_no": {
+            "type": "integer",
+            "title": "Rep No"
+          },
+          "duration_ms": {
+            "type": "number",
+            "title": "Duration Ms"
+          },
+          "rom_deg": {
+            "type": "number",
+            "title": "Rom Deg"
+          },
+          "form_score": {
+            "type": "number",
+            "title": "Form Score"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Errors"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "set_no",
+          "rep_no",
+          "duration_ms",
+          "rom_deg",
+          "form_score",
+          "errors",
+          "confidence"
+        ],
+        "title": "RepResponse"
+      },
+      "SessionDetailResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "client_uuid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Client Uuid"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "plan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Id"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "ended_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ended At"
+          },
+          "pose_model_ver": {
+            "type": "string",
+            "title": "Pose Model Ver"
+          },
+          "app_version": {
+            "type": "string",
+            "title": "App Version"
+          },
+          "overall_score": {
+            "type": "number",
+            "title": "Overall Score"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "session_exercises": {
+            "items": {
+              "$ref": "#/components/schemas/SessionExerciseResponse"
+            },
+            "type": "array",
+            "title": "Session Exercises"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "client_uuid",
+          "patient_id",
+          "plan_id",
+          "started_at",
+          "ended_at",
+          "pose_model_ver",
+          "app_version",
+          "overall_score",
+          "created_at"
+        ],
+        "title": "SessionDetailResponse"
+      },
+      "SessionExerciseResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "exercise_id": {
+            "type": "integer",
+            "title": "Exercise Id"
+          },
+          "sets_done": {
+            "type": "integer",
+            "title": "Sets Done"
+          },
+          "reps_done": {
+            "type": "integer",
+            "title": "Reps Done"
+          },
+          "avg_form_score": {
+            "type": "number",
+            "title": "Avg Form Score"
+          },
+          "max_rom_deg": {
+            "type": "number",
+            "title": "Max Rom Deg"
+          },
+          "avg_rom_deg": {
+            "type": "number",
+            "title": "Avg Rom Deg"
+          },
+          "pain_before": {
+            "type": "integer",
+            "title": "Pain Before"
+          },
+          "pain_after": {
+            "type": "integer",
+            "title": "Pain After"
+          },
+          "side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Side"
+          },
+          "rep_events": {
+            "items": {
+              "$ref": "#/components/schemas/RepResponse"
+            },
+            "type": "array",
+            "title": "Rep Events"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "exercise_id",
+          "sets_done",
+          "reps_done",
+          "avg_form_score",
+          "max_rom_deg",
+          "avg_rom_deg",
+          "pain_before",
+          "pain_after",
+          "side"
+        ],
+        "title": "SessionExerciseResponse"
+      },
+      "SessionHistoryItem": {
+        "properties": {
+          "session": {
+            "type": "string",
+            "title": "Session"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session",
+          "score"
+        ],
+        "title": "SessionHistoryItem"
+      },
+      "SessionListResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SessionSummaryResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "items"
+        ],
+        "title": "SessionListResponse"
+      },
+      "SessionSummaryResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "client_uuid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Client Uuid"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "plan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Id"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "ended_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ended At"
+          },
+          "overall_score": {
+            "type": "number",
+            "title": "Overall Score"
+          },
+          "exercises_count": {
+            "type": "integer",
+            "title": "Exercises Count"
+          },
+          "total_reps_done": {
+            "type": "integer",
+            "title": "Total Reps Done"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "client_uuid",
+          "patient_id",
+          "plan_id",
+          "started_at",
+          "ended_at",
+          "overall_score",
+          "exercises_count",
+          "total_reps_done"
+        ],
+        "title": "SessionSummaryResponse"
+      },
+      "SessionSyncResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "created",
+              "already_synced"
+            ],
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "session": {
+            "$ref": "#/components/schemas/SessionDetailResponse"
+          },
+          "progress_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/ProgressMetricResponse"
+            },
+            "type": "array",
+            "title": "Progress Metrics"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "message",
+          "session"
+        ],
+        "title": "SessionSyncResponse"
+      },
+      "TTSPayload": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text",
+            "description": "Text to synthesize to speech"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "TTSPayload"
+      },
+      "TokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token"
+        ],
+        "title": "TokenResponse"
+      },
+      "UserPublic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "role",
+          "is_active",
+          "full_name",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "UserPublic",
+        "description": "Safe, outward-facing representation of a User.\npassword_hash is intentionally absent."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

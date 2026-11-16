@@ -2,11 +2,25 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   StatusBar, Animated, Dimensions, Modal, ScrollView,
+  Linking, Platform,
 } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Speech from 'expo-speech';
+import {
+  HeartPulse, AlertTriangle, Camera, ArrowLeft,
+  Pause, Play, CheckCircle2, RefreshCw,
+} from 'lucide-react-native';
 import { COLORS, RADIUS, SHADOW, SHADOW_MD } from '../data/theme';
 import SkeletonOverlay from '../components/SkeletonOverlay';
+import { PoseCamera } from '../components/PoseCamera';
+import {
+  useVisionCameraPermission,
+  isVisionCameraAvailable,
+} from '../engines/providers/visionCameraProvider';
+import { poseEngine } from '../engines/poseEngine';
+import { useCameraLandmarks } from '../hooks/useCameraLandmarks';
+import { progressApi } from '../api/progress';
+
+const LANDMARK_SOURCE = process.env.EXPO_PUBLIC_LANDMARK_SOURCE || 'camera';
 import {
   getPoseConfigForExercise,
   validatePoseConfig,
@@ -38,7 +52,9 @@ function PreSessionPainModal({ visible, onProceed, onAbort }) {
     <Modal visible={visible} transparent animationType="fade">
       <View style={painModal.backdrop}>
         <View style={painModal.card}>
-          <Text style={painModal.icon}>🩺</Text>
+          <View style={{ alignItems: 'center', marginBottom: 8 }}>
+            <HeartPulse size={36} color="#E11D48" />
+          </View>
           <Text style={painModal.title}>Pre-Session Pain Check</Text>
           <Text style={painModal.sub}>
             Before beginning, how would you rate your current ankle pain on a scale of 0 to 10?
@@ -145,6 +161,32 @@ function LiveExercise({
   const [paused,      setPaused]      = useState(false);
   const [elapsed,     setElapsed]     = useState(0);
   const [landmarks,   setLandmarks]   = useState(null);
+  const [cameraFacing, setCameraFacing] = useState('front');
+
+  const effectiveSource = isSimulation || !isVisionCameraAvailable() ? 'synthetic' : LANDMARK_SOURCE;
+
+  const toggleCameraFacing = useCallback(() => {
+    poseEngine.reset();
+    setCameraFacing(prev => (prev === 'front' ? 'back' : 'front'));
+  }, []);
+
+  // Frame processing callback from real camera
+  const onCameraFrame = useCallback((canonicalFrame) => {
+    if (canonicalFrame?.landmarks) {
+      processPoseFrame(canonicalFrame.landmarks, canonicalFrame.timestamp || Date.now());
+    }
+  }, [processPoseFrame]);
+
+  // Hook subscription for camera landmarks
+  const {
+    status: cameraTrackingStatus,
+    fps: cameraFps,
+    guidance: cameraGuidance,
+  } = useCameraLandmarks({
+    exerciseName: exercise.name,
+    onFrame: onCameraFrame,
+    enabled: effectiveSource === 'camera',
+  });
 
   // Timing & audio cooldown refs
   const pausedRef       = useRef(false);
@@ -261,9 +303,12 @@ function LiveExercise({
   // Main frame processing loop (runs at 15-20 FPS)
   const processPoseFrame = useCallback((rawLandmarks, timestamp = Date.now()) => {
     if (pausedRef.current || sessionDoneRef.current) return;
+    if (effectiveSource === 'camera' && cameraTrackingStatus === 'lost') return;
 
     // 1. Position guidance evaluation
-    const guideMsg = checkPositioningGuidance(rawLandmarks);
+    const guideMsg = (effectiveSource === 'camera' && cameraGuidance)
+      ? cameraGuidance
+      : checkPositioningGuidance(rawLandmarks);
 
     // 2. Adaptive low-pass landmark smoothing
     const smoothed = smootherRef.current.filter(rawLandmarks, timestamp);
@@ -310,7 +355,7 @@ function LiveExercise({
       setGuidance(guideMsg);
       setLandmarks(smoothed);
     }
-  }, [checkPositioningGuidance, showFeedback, finishSession, TOTAL_REPS, TARGET_REPS, TARGET_SETS, speakCue]);
+  }, [checkPositioningGuidance, showFeedback, finishSession, TOTAL_REPS, TARGET_REPS, TARGET_SETS, speakCue, effectiveSource, cameraTrackingStatus, cameraGuidance]);
 
   // Clock elapsed timer (1 second interval)
   useEffect(() => {
@@ -323,8 +368,9 @@ function LiveExercise({
   }, []);
 
   // Frame generator: runs simulated anatomical trajectory at 20 FPS (50ms interval)
-  // or receives camera frame processor callbacks
+  // when synthetic source is active
   useEffect(() => {
+    if (effectiveSource !== 'synthetic') return;
     let frameStep = 0;
     const intervalMs = 50; // 20 FPS inference budget
 
@@ -355,7 +401,7 @@ function LiveExercise({
     }, intervalMs);
 
     return () => clearInterval(frameLoop);
-  }, [processPoseFrame]);
+  }, [effectiveSource, processPoseFrame]);
 
   const fmtTime = sec =>
     `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
@@ -375,7 +421,12 @@ function LiveExercise({
           </View>
         </View>
       ) : (
-        <CameraView style={StyleSheet.absoluteFill} facing="front" />
+        <PoseCamera
+          facing={cameraFacing}
+          onFacingChange={setCameraFacing}
+          sessionActive={!paused && !sessionDoneRef.current}
+          onSimulate={() => setIsSimulation(true)}
+        />
       )}
 
       {/* 2D BlazePose Skeleton Overlay */}
@@ -401,9 +452,21 @@ function LiveExercise({
           <Text style={live.exName}>{exercise.name || 'Ankle Exercise'}</Text>
           <Text style={live.timer}>{fmtTime(elapsed)}</Text>
         </View>
-        <View style={live.setBadge}>
-          <Text style={live.setSmall}>Set</Text>
-          <Text style={live.setBig}>{currentSet}/{TARGET_SETS}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          {!isSimulation && (
+            <TouchableOpacity
+              style={live.switchBtn}
+              onPress={toggleCameraFacing}
+              activeOpacity={0.8}
+              accessibilityLabel="Switch Camera facing"
+            >
+              <RefreshCw size={16} color={COLORS.ivory} />
+            </TouchableOpacity>
+          )}
+          <View style={live.setBadge}>
+            <Text style={live.setSmall}>Set</Text>
+            <Text style={live.setBig}>{currentSet}/{TARGET_SETS}</Text>
+          </View>
         </View>
       </View>
 
@@ -490,23 +553,28 @@ function LiveExercise({
 // ─── Main Export With Permission & Pre-Session Pain Gates ──────────────────
 export default function LiveMonitorScreen({ route, navigation }) {
   const { exercise } = route.params || { exercise: { name: 'Heel Raise', reps: 10, sets: 3 } };
-  const [permission, requestPermission] = useCameraPermissions();
+  const permission = useVisionCameraPermission();
   const [granted, setGranted] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
   const [showPainModal, setShowPainModal] = useState(false);
   const [painScorePre, setPainScorePre] = useState(0);
 
   useEffect(() => {
-    if (permission?.granted) {
+    if (permission?.hasPermission) {
       setGranted(true);
       setShowPainModal(true);
     }
-  }, [permission]);
+  }, [permission?.hasPermission]);
 
   // Pre-session check confirmed
   const handlePainProceed = (score) => {
     setPainScorePre(score);
     setShowPainModal(false);
+    progressApi.recordPainLog({
+      pain_level: score,
+      body_part: `${exercise?.side || 'Left'} Ankle`,
+      notes: `Pre-session baseline recorded before starting ${exercise?.name || 'rehabilitation exercise'}.`,
+    }).catch(() => {});
   };
 
   // Pre-session check aborted / severe pain
@@ -517,34 +585,61 @@ export default function LiveMonitorScreen({ route, navigation }) {
 
   // Permission Gate Screen
   if (!granted) {
+    const isAvail = isVisionCameraAvailable();
+    const isDenied = permission?.status === 'denied';
+
     return (
       <View style={gate.root}>
         <StatusBar barStyle="dark-content" backgroundColor={COLORS.sage} />
-        <TouchableOpacity style={gate.backBtn} onPress={() => navigation.goBack()}>
-          <Text style={gate.backIcon}>←</Text>
+        <TouchableOpacity style={gate.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.8}>
+          <ArrowLeft size={22} color={COLORS.charcoal} />
         </TouchableOpacity>
         <View style={gate.container}>
           <View style={gate.card}>
-            <Text style={gate.icon}>📷</Text>
-            <Text style={gate.title}>Camera Access Required</Text>
-            <Text style={gate.body}>
-              AxioMedica uses on-device BlazePose AI to monitor your ankle kinematics, track
-              ROM excursion, and provide real-time coaching feedback.
+            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#FEF3C7', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+              <Camera size={28} color={COLORS.charcoal} />
+            </View>
+            <Text style={gate.title}>
+              {!isAvail
+                ? 'Camera Unavailable'
+                : isDenied
+                ? 'Camera Access Denied'
+                : 'Camera Access Required'}
             </Text>
-            <TouchableOpacity
-              style={gate.btn}
-              onPress={async () => {
-                const result = await requestPermission();
-                if (result.granted) {
-                  setIsSimulation(false);
-                  setGranted(true);
-                  setShowPainModal(true);
-                }
-              }}
-              activeOpacity={0.88}
-            >
-              <Text style={gate.btnText}>Enable Camera</Text>
-            </TouchableOpacity>
+            <Text style={gate.body}>
+              {!isAvail
+                ? 'On-device camera acceleration is not available in this environment. You can run exercises using simulated kinematics.'
+                : isDenied
+                ? 'Camera permission was previously denied. Please enable camera access in your device settings to use real-time AI tracking.'
+                : 'AxioMedica uses on-device BlazePose AI to monitor your ankle kinematics, track ROM excursion, and provide real-time coaching feedback.'}
+            </Text>
+
+            {isAvail && !isDenied && (
+              <TouchableOpacity
+                style={gate.btn}
+                onPress={async () => {
+                  const ok = await permission.requestPermission();
+                  if (ok) {
+                    setIsSimulation(false);
+                    setGranted(true);
+                    setShowPainModal(true);
+                  }
+                }}
+                activeOpacity={0.88}
+              >
+                <Text style={gate.btnText}>Enable Camera</Text>
+              </TouchableOpacity>
+            )}
+
+            {isDenied && Platform.OS !== 'web' && (
+              <TouchableOpacity
+                style={gate.btn}
+                onPress={() => Linking.openSettings()}
+                activeOpacity={0.88}
+              >
+                <Text style={gate.btnText}>Open Settings</Text>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               style={[gate.btn, { backgroundColor: '#F5E6CC', marginTop: 4 }]}
@@ -607,6 +702,11 @@ const live = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.50)',
   },
   closeBtn: {
+    width: 36, height: 36, borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  switchBtn: {
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center', justifyContent: 'center',

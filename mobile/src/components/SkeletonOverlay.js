@@ -29,17 +29,19 @@ function Bone({ from, to, color = '#4CAF50' }) {
   const angleRad = Math.atan2(dy, dx);
   const angleDeg = (angleRad * 180) / Math.PI;
 
+  const cx = (from.x + to.x) / 2;
+  const cy = (from.y + to.y) / 2;
+
   return (
     <View
       style={{
         position: 'absolute',
-        left: from.x,
-        top: from.y - 1.5,
+        left: cx - length / 2,
+        top: cy - 2,
         width: length,
-        height: 3,
+        height: 4,
         backgroundColor: color,
-        opacity: 0.75,
-        transformOrigin: 'left center',
+        opacity: 0.85,
         transform: [{ rotate: `${angleDeg}deg` }],
         borderRadius: 2,
       }}
@@ -110,5 +112,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderWidth: 2,
     opacity: 0.95,
+    zIndex: 10,
   },
 });

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { COLORS, RADIUS, SHADOW, SHADOW_MD } from '../data/theme';
 import { ProgressBar, Card } from '../components/UI';
+import { Activity } from 'lucide-react-native';
 import ExerciseCard from '../components/ExerciseCard';
 import { useAuth } from '../context/AuthContext';
 import { plansApi } from '../api/plans';
@@ -148,7 +149,7 @@ export default function MyPlanScreen({ navigation }) {
 
         {displayExercises.length === 0 ? (
           <Card style={s.emptyCard}>
-            <Text style={s.emptyEmoji}>📋</Text>
+            <Activity size={32} color={COLORS.mutedSage} style={{ marginBottom: 8 }} />
             <Text style={s.emptyTitle}>No exercises found</Text>
             <Text style={s.emptySub}>Your care team will add exercises to your protocol soon.</Text>
           </Card>

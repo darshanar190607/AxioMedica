@@ -1,0 +1,8 @@
+PASS __tests__/poseEngine.test.js (16.92 s)
+PASS __tests__/offlineSync.test.js (17.157 s)
+
+Test Suites: 2 passed, 2 total
+Tests:       29 passed, 29 total
+Snapshots:   0 total
+Time:        19.643 s
+Ran all test suites.

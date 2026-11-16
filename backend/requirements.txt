@@ -10,6 +10,7 @@ alembic==1.14.0
 # Settings & Validation
 pydantic[email]==2.10.1
 pydantic-settings==2.6.1
+jsonschema>=4.20.0
 
 # Security & Authentication
 python-jose[cryptography]==3.3.0
