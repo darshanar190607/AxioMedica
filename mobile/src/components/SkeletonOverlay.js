@@ -55,6 +55,7 @@ export default function SkeletonOverlay({
   height,
   color = '#4CAF50',
   isMirrored = false,
+  transform,
 }) {
   if (!landmarks || !width || !height) return null;
 
@@ -62,9 +63,14 @@ export default function SkeletonOverlay({
   const screenPts = {};
   for (const [name, pt] of Object.entries(landmarks)) {
     if (pt && typeof pt.x === 'number' && typeof pt.y === 'number') {
-      const pxX = (isMirrored ? 1.0 - pt.x : pt.x) * width;
-      const pxY = pt.y * height;
-      screenPts[name] = { x: pxX, y: pxY, visibility: pt.visibility ?? 1.0 };
+      if (typeof transform === 'function') {
+        const { px, py } = transform(pt);
+        screenPts[name] = { x: px, y: py, visibility: pt.visibility ?? 1.0 };
+      } else {
+        const pxX = (isMirrored ? 1.0 - pt.x : pt.x) * width;
+        const pxY = pt.y * height;
+        screenPts[name] = { x: pxX, y: pxY, visibility: pt.visibility ?? 1.0 };
+      }
     }
   }
 

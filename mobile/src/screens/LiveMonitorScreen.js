@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   StatusBar, Animated, Dimensions, Modal, ScrollView,
@@ -11,7 +11,9 @@ import {
 } from 'lucide-react-native';
 import { COLORS, RADIUS, SHADOW, SHADOW_MD } from '../data/theme';
 import SkeletonOverlay from '../components/SkeletonOverlay';
+import TrackingBanner from '../components/TrackingBanner';
 import { PoseCamera } from '../components/PoseCamera';
+import { makeTransform } from '../utils/overlayTransform';
 import {
   useVisionCameraPermission,
   isVisionCameraAvailable,
@@ -408,6 +410,17 @@ function LiveExercise({
   const displayReps = repsDone >= TOTAL_REPS ? TARGET_REPS : repsDone % TARGET_REPS;
   const safety = SAFETY[safetyKey] || SAFETY.SAFE;
 
+  const overlayTransform = useMemo(() => {
+    return makeTransform({
+      frameW: 720,
+      frameH: 1280,
+      viewW: SCREEN_WIDTH,
+      viewH: SCREEN_HEIGHT,
+      resizeMode: 'cover',
+      mirror: cameraFacing === 'front',
+    });
+  }, [cameraFacing]);
+
   return (
     <View style={live.container}>
       <StatusBar hidden />
@@ -436,6 +449,8 @@ function LiveExercise({
           width={SCREEN_WIDTH}
           height={SCREEN_HEIGHT}
           color={safety.color}
+          transform={overlayTransform}
+          isMirrored={cameraFacing === 'front'}
         />
       )}
 
@@ -470,11 +485,12 @@ function LiveExercise({
         </View>
       </View>
 
-      {/* Positioning Guide Banner ("Stand here / move back") */}
-      <View style={live.guidanceCard}>
-        <Text style={live.guidanceIcon}>📍</Text>
-        <Text style={live.guidanceText}>{guidance}</Text>
-      </View>
+      {/* Real-time Debounced Tracking Banner */}
+      <TrackingBanner
+        status={cameraTrackingStatus || 'tracking'}
+        message={guidance}
+        style={live.trackingBanner}
+      />
 
       {/* Audio Coaching Feedback Toast */}
       <Animated.View
@@ -728,6 +744,10 @@ const live = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 8,
     borderRadius: RADIUS.full, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)',
     ...SHADOW,
+  },
+  trackingBanner: {
+    position: 'absolute', top: 96, alignSelf: 'center',
+    maxWidth: SCREEN_WIDTH - 36,
   },
   guidanceIcon: { fontSize: 13, marginRight: 6 },
   guidanceText: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
