@@ -283,6 +283,7 @@ function LiveExercise({
       exerciseResults: [exerciseResult],
       painScorePre,
       painScorePost: Math.max(0, painScorePre - 1),
+      calibration: baseline,
     });
 
     speakCue('Exercise complete! Great effort today.');

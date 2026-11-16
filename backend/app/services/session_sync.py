@@ -261,6 +261,11 @@ class SessionSyncService:
                 exercises=payload.exercises,
             )
 
+            # 9. Update patient calibration baseline if included
+            if getattr(payload, "calibration", None) is not None:
+                patient.calibration_data = payload.calibration
+                db.add(patient)
+
             await db.commit()
 
             # Re-fetch session with loaded relationships

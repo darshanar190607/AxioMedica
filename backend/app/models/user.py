@@ -14,6 +14,7 @@ from sqlalchemy import (
     DateTime,
     Enum,
     ForeignKey,
+    JSON,
     String,
     Text,
     UniqueConstraint,
@@ -148,6 +149,7 @@ class Patient(TimestampMixin, Base):
         ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True,
     )
+    calibration_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     # ---- relationships ----
     user: Mapped["User"] = relationship("User", foreign_keys=[user_id], back_populates="patient")

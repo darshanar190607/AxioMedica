@@ -21,7 +21,7 @@ export async function generateSpeech(text) {
     throw new Error('Text to synthesize cannot be empty.');
   }
 
-  const response = await fetch(`${TTS_BASE_URL}/api/tts`, {
+  const response = await fetch(`${TTS_BASE_URL}/api/v1/tts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

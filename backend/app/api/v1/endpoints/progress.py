@@ -81,6 +81,12 @@ async def get_progress_summary(
         baseline_rom = round(all_roms[0], 1)
         current_rom = round(max(all_roms), 1)
 
+    # Prefer actual calibration baseline if patient has completed calibration
+    if getattr(patient, "calibration_data", None) and isinstance(patient.calibration_data, dict):
+        calibrated_rom = patient.calibration_data.get("baselineRomDeg")
+        if calibrated_rom is not None:
+            baseline_rom = round(float(calibrated_rom), 1)
+
     improvement_deg = round(max(0.0, current_rom - baseline_rom), 1)
     improvement_pct = round(
         (improvement_deg / baseline_rom * 100) if baseline_rom > 0 else 0.0, 1
