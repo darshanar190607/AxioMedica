@@ -1,37 +1,16 @@
 {
-  "name": "ankle",
+  "name": "axiomedia-monorepo",
   "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "@expo/metro-runtime": "~58.0.17",
-    "@react-navigation/bottom-tabs": "^7.19.1",
-    "@react-navigation/native": "^7.4.1",
-    "@react-navigation/stack": "^7.11.1",
-    "expo": "^58.0.23",
-    "expo-av": "^16.0.8",
-    "expo-camera": "~58.0.14",
-    "expo-linear-gradient": "~58.0.3",
-    "expo-status-bar": "~58.0.4",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "react-native": "0.88.1",
-    "react-native-gesture-handler": "^3.3.0",
-    "react-native-reanimated": "4.7.1",
-    "react-native-safe-area-context": "~5.11.1",
-    "react-native-screens": "~4.30.1",
-    "react-native-vector-icons": "^10.3.0",
-    "react-native-web": "^0.21.4"
-  },
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
-  },
+  "description": "AxioMedica monorepo root — real app is in mobile/",
   "private": true,
+  "dependencies": {},
+  "scripts": {
+    "dev": "run_dev.bat",
+    "backend": "cd backend && set PYTHONPATH=. && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "mobile": "cd mobile && npx expo start"
+  },
   "devDependencies": {
     "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1",
-    "babel-preset-expo": "~58.0.0"
+    "ajv-formats": "^3.0.1"
   }
 }

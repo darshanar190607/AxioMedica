@@ -5,6 +5,7 @@
 # ── Node / Expo (mobile/) ─────────────────────────────────────
 node_modules/
 mobile/node_modules/
+.expo/
 mobile/.expo/
 mobile/android/
 mobile/ios/

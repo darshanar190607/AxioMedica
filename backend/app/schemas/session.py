@@ -85,6 +85,10 @@ class SessionSyncPayload(BaseModel):
         min_length=1,
         description="Array of exercises performed during session.",
     )
+    calibration: dict | None = Field(
+        default=None,
+        description="Optional initial baseline ROM / neutral pose calibration metadata.",
+    )
 
 
 # ---------------------------------------------------------------------------

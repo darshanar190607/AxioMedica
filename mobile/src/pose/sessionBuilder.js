@@ -141,5 +141,9 @@ export function buildSessionPayload({
     payload.plan_id = planId;
   }
 
+  if (rest.calibration) {
+    payload.calibration = rest.calibration;
+  }
+
   return payload;
 }
